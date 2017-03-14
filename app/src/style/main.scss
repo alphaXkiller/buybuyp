@@ -1,0 +1,62 @@
+$fa-font-path: "~font-awesome/fonts";
+@import "~font-awesome/scss/font-awesome";
+@import '~bootstrap/scss/bootstrap.scss';
+
+@import 'overwrite.scss';
+@import 'variable.scss';
+
+@import './components/button.scss';
+
+body {
+  background-color: $color-primary
+}
+
+main {
+  top            : 50px;
+  clear          : both;
+  display        : flex;
+  position       : relative;
+  flex-direction : column;
+}
+
+
+#content {
+  width      : 100%;
+  height     : 100vh;
+  transition : transform 0.5s;
+
+  &::before {
+    top              : 0;
+    left             : 0;
+    width            : 100%;
+    height           : 100vh;
+    z-index          : 9000;
+    content          : '';
+    display          : block;
+    opacity          : 0;
+    position         : absolute;
+    visibility       : hidden;
+    transition       : all 0.5s ease-in-out;
+    background-color : rgba(0, 0, 0, 0.75);
+  }
+}
+
+.active-menu {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  
+  .nav-main {
+    transform  : translateX(0px);
+    transition : transform 0.5s ease-in-out;
+  }
+
+  #content {
+    transform  : translateX(320px);
+    transition : all 0.5s ease-in-out;
+  }
+
+  #content::before{
+    opacity: 1;
+    visibility: visible;
+  }
+}
