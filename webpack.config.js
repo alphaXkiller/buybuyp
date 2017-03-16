@@ -9,7 +9,7 @@ const extractSass = new ExtractTextPlugin({
 })
 
 // Find out which loader is causing decrecation warning
-process.traceDeprecation = true
+// process.traceDeprecation = true
 
 module.exports = {
   entry: {
@@ -49,7 +49,7 @@ module.exports = {
         loader: 'babel-loader',
         // Babel will soon have a update to remove the deprecation warning
         options: {
-          presets: ['es2015', 'react'],
+          presets: ['latest', 'react'],
           plugins: ['transform-class-properties']
         }
       },
