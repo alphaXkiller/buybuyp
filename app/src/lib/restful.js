@@ -23,7 +23,6 @@ const parseKeys = R.curry( (url, keys) => {
     (val) => val.substr(INDEX_AFTER_COLON)
   )(val)
     
-
   return R.reduce(swapKeyWithValue, url, _key_list(url))
 })
 
@@ -57,6 +56,8 @@ const apiRequest = async ({method, path, keys, query, body}) => {
   const token = await getToken()
 
   let _url = Path_map[path]
+  
+  if(R.isNil(_url)) throw new Error('WRONG PATH')
 
   if(keys) _url = parseKeys(_url)(keys)
   if(query) _url = parseQuery(_url)(query)

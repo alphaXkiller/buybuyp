@@ -75,7 +75,7 @@ const Nav = props => {
           />
         </Link>
         {
-          R.path(['user', 'id'])(props) ?
+          R.path(['user', 'uid'])(props) ?
             _renderUser(props.user, props.logout) 
             : _renderLoginBtn({
               toggleLogin: props.onClickToggleLogin,

@@ -57,10 +57,10 @@ const logoutStart = () => ({ type: TYPE.logout_pending })
 const logoutSuccessfully = () => ({ type: TYPE.logout_success })
 
 
-const loginGoogle = (dispatch, getState) => googleLogin()
+const loginGoogle = (dispatch, getState) => Bluebird.resolve(googleLogin())
 
 
-const loginFacebook = (dispatch, getState) => facebookLogin()
+const loginFacebook = (dispatch, getState) => Bluebird.resolve(facebookLogin())
 
 
 const loginEmail = ({email, password}) => (dispatch, getState) => 
@@ -82,12 +82,19 @@ const signup = ({name, email, password}) => (dispatch, getState) =>
   .catch( err => dispatch(signupFailed(err.data)) )
 
 
-const getUser = (dispatch, getState) =>
-  Bluebird.resolve(dispatch(getUserStart()))
+const getUser = (dispatch, getState) => Bluebird
+  .resolve(dispatch(getUserStart()))
 
   .then( () => getCurrentUser() )
 
-  .then( user => dispatch(getUserSuccessfully(user)) )
+  .tap( user => dispatch(getUserSuccessfully(user)) )
+
+  .then(R.when(notNil, user => Api({
+    method: 'post',
+    path: 'user_validation',
+    keys: { uid: user.uid },
+    body: user
+  })))
 
 
 const logoutUser = (dispatch, getState) =>

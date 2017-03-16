@@ -10,6 +10,8 @@ const TYPE = {
   post_product_success        : 'post_product_successfully',
   get_product_details_pending : 'get_product_details_pending',
   get_product_details_success : 'get_product_details_successfully',
+  search_pending              : 'search_pending',
+  search_successfully         : 'search_successfully',
 
   // ==========
   //  empty product state
@@ -73,6 +75,7 @@ const emptyPostedProductStart = () => ({ type: TYPE.empty_posted_product })
 const emptyPostedProduct = (dispatch, getState) =>
   dispatch(emptyPostedProductStart())
 
+
 // ===========================
 // get product detials
 // ===========================
@@ -98,12 +101,38 @@ const getProductDetails = ({id}) => (dispatch, getState) =>
   .then( product =>  dispatch(getProductDetailsSuccessfully(product.data)))
 
 
+// =============================================================================
+// LOGGIN NOT REQUIRED
+// =============================================================================
+
+// ===========================
+// get product detials
+// ===========================
+const searchStart = () => ({ type: TYPE.search_pending })
+
+const searchSuccessfully = payload => ({
+  type: TYPE.search_successfully, 
+  payload 
+})
+
+const search = ({page, keyword}) => (dispatch, getState) => Bluebird
+  .resolve(dispatch(searchStart()))
+
+  .then( () => Api({
+    method: 'get',
+    path: 'product_search'
+  }) )
+
+  .then( product => dispatch(searchSuccessfully(product.data)) )
+
+
 
 export default {
   TYPE,
-  uploadImage,
-  postProduct,
   emptyPostedProduct,
-  getProductDetails
+  getProductDetails,
+  search,
+  postProduct,
+  uploadImage,
 }
 

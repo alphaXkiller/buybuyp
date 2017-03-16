@@ -45,7 +45,7 @@ const getCurrentUser = () =>
   .then(R.when(
     notNil,
     R.applySpec({
-      id: R.prop('uid'),
+      uid: R.prop('uid'),
       name: R.prop('displayName'),
       email: R.prop('email'),
       email_verified: R.prop('emailVerified'),

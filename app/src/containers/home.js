@@ -1,7 +1,10 @@
+import R from 'ramda'
 import React, { Component } from 'react'
 import { connect }          from 'react-redux'
 
 import { Card, CardHeader, CardMedia, CardTitle } from 'material-ui/Card'
+
+import { Product } from '../actions/index.js'
 import './home.scss'
 
 const styles = {
@@ -17,77 +20,33 @@ const styles = {
         },
 };
 
-const tilesData = [
-    {
-          img: 'http://www.material-ui.com/images/grid-list/00-52-29-429_640.jpg',
-          title: 'Breakfast',
-          author: 'jill111',
-          featured: true,
-        },
-    {
-          img: 'http://www.material-ui.com/images/grid-list/burger-827309_640.jpg',
-          title: 'Tasty burger',
-          author: 'pashminu',
-        },
-    {
-          img: 'http://www.material-ui.com/images/grid-list/camera-813814_640.jpg',
-          title: 'Camera',
-          author: 'Danson67',
-        },
-    {
-          img: 'http://www.material-ui.com/images/grid-list/morning-819362_640.jpg',
-          title: 'Morning',
-          author: 'fancycrave1',
-          featured: true,
-        },
-    {
-          img: 'http://www.material-ui.com/images/grid-list/hats-829509_640.jpg',
-          title: 'Hats',
-          author: 'Hans',
-        },
-    {
-          img: 'http://www.material-ui.com/images/grid-list/honey-823614_640.jpg',
-          title: 'Honey',
-          author: 'fancycravel',
-        },
-    {
-          img: 'http://www.material-ui.com/images/grid-list/vegetables-790022_640.jpg',
-          title: 'Vegetables',
-          author: 'jill111',
-        },
-    {
-          img: 'http://www.material-ui.com/images/grid-list/water-plant-821293_640.jpg',
-          title: 'Water plant',
-          author: 'BkrmadtyaKarki',
-        },
-  ];
-
 
 class Home extends Component {
+  componentDidMount() {
+    this.props.getProductList({ page: 1, keyword: '' })
+  }
+
+
   render() {
     return (
       <div className='d-flex flex-column'>
         {
-          tilesData.map(
-            tile => (
-              <Card key={tile.img}>
-                <CardHeader
-                  title='Poster name'
-                  avatar='http://www.material-ui.com/images/jsa-128.jpg'
-                  style={{padding: '10px 5px'}}
-                  textStyle={{verticalAlign: 'middle'}}
-                />
-                <CardMedia>
-                  <img src={tile.img}/>
-                </CardMedia>
-                <CardTitle 
-                  title={tile.title} 
-                  subtitle='$100' 
-                  subtitleColor='red'
-                />
-              </Card>
-            )
-          )
+          R.map( product => (
+            <Card key={product.id}>
+              <CardHeader
+                title={product.user.name}
+                avatar= {product.user.profile_image}
+                style={{padding: '10px 5px'}}
+                textStyle={{verticalAlign: 'middle'}}
+              />
+              <CardMedia><img src={product.images[0].path}/></CardMedia>
+              <CardTitle 
+                title={product.name} 
+                subtitle={product.price}
+                subtitleColor='red'
+              />
+            </Card>
+          ))(this.props.product_list)
         }
       </div>
     )
@@ -96,8 +55,21 @@ class Home extends Component {
 
 
 const mapStateToProps = state => ({
-  user: state.User
+  product_list: state.Product.rows,
+  product_count: state.Product.count
 })
 
 
-export default connect(mapStateToProps)(Home)
+const mapDispatchToProps = dispatch => ({
+  getProductList: ({page, keyword}) => dispatch(
+    Product.search({page, keyword})
+  )
+})
+
+
+Home.defaultProps = {
+  product_list: [],
+  product_count: 0
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home)
