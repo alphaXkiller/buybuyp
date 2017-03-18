@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { RouteActor } from '../../routes_config.js'
+import { RouteActor } from '../../routes.js'
 
 class Main extends Component {
   render() {
