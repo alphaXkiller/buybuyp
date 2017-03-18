@@ -49,7 +49,7 @@ module.exports = {
         loader: 'babel-loader',
         // Babel will soon have a update to remove the deprecation warning
         options: {
-          presets: ['latest', 'react'],
+          presets: ['es2015', 'react'],
           plugins: ['transform-class-properties']
         }
       },

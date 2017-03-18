@@ -1,5 +1,6 @@
 node_modules
 yarn.lock
 npm-debug.log
+test.js
 
 app/public/assets/*
