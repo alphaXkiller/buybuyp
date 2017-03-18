@@ -1,6 +1,5 @@
 import R from 'ramda'
 import React from 'react'
-import TextField from 'material-ui/TextField'
 import {
   Step,
   StepLabel,

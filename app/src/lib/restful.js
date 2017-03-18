@@ -8,6 +8,8 @@ import { getToken } from './auth.js'
 
 const PARAMS_REGEX      = /:[a-zA-Z]*/
 const INDEX_AFTER_COLON = 1
+const baseURL        = 'http://127.0.0.1:3031'
+// const baseURL           = 'http://buybuy-api.us-west-2.elasticbeanstalk.com'
 
 
 const _key_list = R.match(PARAMS_REGEX)
@@ -42,6 +44,11 @@ const parseQuery = R.curry( (url, query) => {
 })
 
 
+const solution = (instance, url, body) => ({
+  get  : () => Bluebird.resolve(instance.get(url)),
+  post : () => Bluebird.resolve(instance.post(url, body))
+})
+
 /**
  * @param {string} path - it must match the keys in urlMap
  * @param {object} keys
@@ -50,32 +57,29 @@ const parseQuery = R.curry( (url, query) => {
  * TODO: add a key checker to urlMap. If the path requires any key, and it
  * doesn't get passed, it should throw an error
  **/
-const apiRequest = async ({method, path, keys, query, body}) => {
-  const baseURL = 'http://127.0.0.1:3031'
-  // const baseUrl      = 'http://buybuy-api.us-west-2.elasticbeanstalk.com'
-  const token = await getToken()
+const apiRequest = ({method, path, keys, query, body}) => {
 
   let _url = Path_map[path]
   
-  if(R.isNil(_url)) throw new Error('WRONG PATH')
+  if (R.isNil(_url)) throw new Error('WRONG PATH')
 
-  if(keys) _url = parseKeys(_url)(keys)
-  if(query) _url = parseQuery(_url)(query)
+  if (keys) _url = parseKeys(_url)(keys)
+  if (query) _url = parseQuery(_url)(query)
 
-  const Authorization = R.ifElse(
-    R.test(/^\/api\//),
-    () => R.concat('Bearer ')(token),
-    R.always(null)
-  )(_url)
+  // TODO: SUPPOSE TO USE ASYNC/AWAIT, BUT BROWSER SUPPORT IS SO POOR
+  if (R.test(/^\/api\//)(_url)) {
+    return getToken()
+      
+      .then( token => {
+        const Authorization = R.concat('Bearer ')(token)
+        const request = Axios.create({ headers: { Authorization }, baseURL })
 
-  const request = Axios.create({ headers: { Authorization }, baseURL})
-
-  const solution = {
-    get  : () => Bluebird.resolve(request.get(_url)),
-    post : () => Bluebird.resolve(request.post(_url, body))
+        return solution(request, _url, body)[method]()
+      })
+  } else {
+    const request = Axios.create({baseURL})
+    return solution(request, _url, body)[method]()
   }
-
-  return solution[R.toLower(method)]()
 }
 
 export default apiRequest

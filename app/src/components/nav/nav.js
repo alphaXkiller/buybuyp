@@ -61,7 +61,9 @@ const Nav = props => {
           <i className='fa fa-times' style={{width: '40px'}}></i>
         </div>
         <Divider />
-        <MenuItem primaryText="Item" />
+        <Link to='/dashboard' onTouchTap={props.onClickHideMenu}>
+          <MenuItem primaryText="dashboard" />
+        </Link>
         <MenuItem primaryText="Item" />
         <MenuItem primaryText="Item" />
         <MenuItem primaryText="Item" />

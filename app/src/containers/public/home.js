@@ -1,10 +1,11 @@
 import R from 'ramda'
 import React, { Component } from 'react'
 import { connect }          from 'react-redux'
+import { Link } from 'react-router-dom'
 
 import { Card, CardHeader, CardMedia, CardTitle } from 'material-ui/Card'
 
-import { Product } from '../actions/index.js'
+import { Product } from '../../actions/index.js'
 import './home.scss'
 
 const styles = {
@@ -32,20 +33,22 @@ class Home extends Component {
       <div className='d-flex flex-column'>
         {
           R.map( product => (
-            <Card key={product.id}>
-              <CardHeader
-                title={product.user.name}
-                avatar= {product.user.profile_image}
-                style={{padding: '10px 5px'}}
-                textStyle={{verticalAlign: 'middle'}}
-              />
-              <CardMedia><img src={product.images[0].path}/></CardMedia>
-              <CardTitle 
-                title={product.name} 
-                subtitle={product.price}
-                subtitleColor='red'
-              />
-            </Card>
+            <Link to={`/product/${product.id}`}>
+              <Card key={product.id}>
+                <CardHeader
+                  title={product.user.name}
+                  avatar={product.user.profile_image}
+                  style={{padding: '10px 5px'}}
+                  textStyle={{verticalAlign: 'middle'}}
+                />
+                <CardMedia><img src={product.images[0].path}/></CardMedia>
+                <CardTitle 
+                  title={product.name} 
+                  subtitle={product.price}
+                  subtitleColor='red'
+                />
+              </Card>
+            </Link>
           ))(this.props.product_list)
         }
       </div>

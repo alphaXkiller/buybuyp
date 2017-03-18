@@ -4,12 +4,16 @@ import { connect }          from 'react-redux'
 import { 
   BrowserRouter as Router } from 'react-router-dom'
 
-import Routes from './routes.js'
+import { 
+  RouteFunctor, 
+  RouteActor 
+} from './routes.js'
 import Nav    from './components/nav/nav.js'
 import Header from './components/header/header.js'
 
 import { User }                        from './actions/index.js'
 import { notEmpty, notNil, notEquals } from './lib/helpers.js'
+import { getCurrentUser } from './lib/auth.js'
 
 import './style/main.scss'
 
@@ -28,31 +32,37 @@ class App extends Component {
     }
   }
 
-  componentDidMount() {
-    this.props.onMount()
+  componentWillMount() {
+    this.props.getUser()
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const isNewLogin = R.both(
-      notNil,
-      notEquals(prevProps.user.id),
-    )(this.props.user.id)
+    let isNewLogin
+    let isSignupSuccessfully
 
-    const isSignupSuccessfully = R.both(
-      notNil,
-      notEquals(prevProps.user.signup_status)
-    )(this.props.user.signup_status)
+    if (this.props.user) {
+      isNewLogin = R.both(
+        notNil,
+        notEquals(R.path(['user', 'uid'])(prevProps)),
+      )(this.props.user.id)
 
-    if (isNewLogin || isSignupSuccessfully)
-      this.setState({
-        show_login: false,
-        show_signup: false
-      })
+      isSignupSuccessfully = R.both(
+        notNil,
+        notEquals(R.path(['user', 'signup_status'])(prevProps))
+      )(this.props.user.signup_status)
+      
+      if (isNewLogin || isSignupSuccessfully)
+        this.setState({
+          show_login: false,
+          show_signup: false
+        })
+    }
   }
 
 
   onClickLogout(e) {
     this.props.logout()
+    this.onClickHideMenu()
   }
 
   onClickShowMenu(e) {
@@ -91,7 +101,7 @@ class App extends Component {
   render() {
     let menu_active_class
     if (this.state.is_menu_active) menu_active_class = 'active-menu'
-
+    console.log(this.state, '/n', this.props)
     return (
       <Router>
         <div className={menu_active_class}>
@@ -109,7 +119,17 @@ class App extends Component {
           }
           <div id='content' onTouchTap={this.onClickHideMenu}>
             {Header(this.onClickShowMenu)}
-            {Routes()}
+            <main>
+              {
+                RouteFunctor.map( (route, i) => (
+                  <RouteActor 
+                    key={i} 
+                    user={this.props.user} 
+                    {...route} 
+                  />
+                ))
+              }
+            </main>
             <footer></footer>
           </div>
         </div>
@@ -124,7 +144,7 @@ const mapStateToProps = state => ({
 
 
 const mapDispatchToProps = (dispatch, getState)=> ({
-  onMount: () => User.getUser(dispatch, getState),
+  getUser: () => User.getUser(dispatch, getState),
   logout: () => User.logoutUser(dispatch, getState)
 })
 

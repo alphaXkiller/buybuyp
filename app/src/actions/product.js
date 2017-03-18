@@ -101,6 +101,18 @@ const getProductDetails = ({id}) => (dispatch, getState) =>
   .then( product =>  dispatch(getProductDetailsSuccessfully(product.data)))
 
 
+const public_getProductDetails = ({id}) => (dispatch, getState) =>
+  Bluebird.resolve(dispatch(getProductDetailsStart()))
+
+  .then( () => Api({
+    method: 'get',
+    path: 'product_details',
+    keys: { id }
+  }))
+
+  .then( product =>  dispatch(getProductDetailsSuccessfully(product.data)))
+
+
 // =============================================================================
 // LOGGIN NOT REQUIRED
 // =============================================================================
@@ -134,5 +146,6 @@ export default {
   search,
   postProduct,
   uploadImage,
+  public_getProductDetails 
 }
 

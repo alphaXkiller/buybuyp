@@ -2,6 +2,7 @@ export default {
 
   'signup'         : '/authenticate/signup',
   'product_search' : '/product',
+  'product_details': '/product/:id',
 
   // Require user login
   'user'                 : '/api/user',

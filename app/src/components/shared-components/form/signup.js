@@ -63,7 +63,8 @@ class Signup extends Component {
 
 const mapStateToProps = (state, props) => ({
   show_class: props.show_signup ? ' show' : null,
-  error_message: state.User.error_message ? state.User.error_message : null
+  error_message: R.path(['User', 'error_message'])(state) ? 
+    state.User.error_message : null
 })
 
 
