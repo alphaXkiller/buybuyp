@@ -1,7 +1,7 @@
 import R            from 'ramda'
 import React        from 'react'
 import Menu         from 'material-ui/Menu'
-import Paper        from 'material-ui/Paper'
+import Drawer        from 'material-ui/Drawer'
 import Divider      from 'material-ui/Divider'
 import MenuItem     from 'material-ui/MenuItem'
 import RaisedButton from 'material-ui/RaisedButton'
@@ -55,39 +55,40 @@ const _renderLoginBtn = ({toggleLogin, toggleSignup}) => (
 
 const Nav = props => {
   return (
-    <nav className='nav-main'>
+    <Drawer 
+      width={320} 
+      open={props.show_menu}
+      docked={false}
+      onRequestChange={props.onClickHideMenu}
+      containerStyle={{
+        overflowX: 'hidden'
+      }}
+    >
       <Menu>
-        <div className='d-flex flex-row-reverse' onTouchTap={props.onClickHideMenu}>
+        <MenuItem onTouchTap={props.onClickHideMenu}>
           <i className='fa fa-times' style={{width: '40px'}}></i>
-        </div>
+        </MenuItem>
         <Divider />
         <Link to='/dashboard' onTouchTap={props.onClickHideMenu}>
-          <MenuItem primaryText="dashboard" />
+          <MenuItem primaryText="Dashboard" />
         </Link>
-        <MenuItem primaryText="Item" />
-        <MenuItem primaryText="Item" />
-        <MenuItem primaryText="Item" />
+        <Link to='/dashboard/sell' onTouchTap={props.onClickHideMenu}>
+          <MenuItem primaryText='Sell'/>
+        </Link>
       </Menu>
-      <div className='mt-auto'>
-        <Link to='/dashboard/sell' onClick={props.onClickHideMenu}>
-          <RaisedButton 
-            label='Sell Your Shitssss' 
-            secondary={true} 
-            fullWidth={true}
-          />
-        </Link>
+      <div>
         {
-          R.path(['user', 'uid'])(props) ?
-            _renderUser(props.user, props.logout) 
-            : _renderLoginBtn({
-              toggleLogin: props.onClickToggleLogin,
-              toggleSignup: props.onClickToggleSignup
-            })
+          // R.path(['user', 'uid'])(props) ?
+          //   _renderUser(props.user, props.logout) 
+          //   : _renderLoginBtn({
+          //     toggleLogin: props.onClickToggleLogin,
+          //     toggleSignup: props.onClickToggleSignup
+          //   })
+          // <Login show_login={props.show_login}/>
+          // <Signup show_signup={props.show_signup}/>
         }
       </div>
-      <Login show_login={props.show_login}/>
-      <Signup show_signup={props.show_signup}/>
-   </nav>
+    </Drawer>
   )
 }
 

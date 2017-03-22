@@ -2,10 +2,10 @@ import R from 'ramda'
 
 import { User } from '../actions/index.js'
 
-const user_reducer = (state = null, action) => R.cond([
+const user_reducer = (state = {}, action) => R.cond([
   [
     R.equals(User.TYPE.logout_success),
-    R.always(null)
+    R.always({})
   ],
   [
     R.equals(User.TYPE.get_user_success),

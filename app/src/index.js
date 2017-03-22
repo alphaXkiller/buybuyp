@@ -1,3 +1,4 @@
+import R                                         from 'ramda'
 import React                                     from 'react'
 import ReactDom                                  from 'react-dom'
 import { Provider }                              from 'react-redux'
@@ -8,7 +9,7 @@ import MuiThemeProvider                          from 'material-ui/styles/MuiThe
 
 import App   from './app.js'
 import Reducers from './reducers/index.js'
-
+import { getCurrentUser } from './lib/auth.js'
 
 
 // onTouchTap
@@ -16,7 +17,7 @@ ReactTapEventPlugin()
 
 let composeEnhancers = compose
 if (process.env.NODE_ENV !== 'production') {
-  composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+  // composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 }
 
 const store = createStore(
@@ -24,12 +25,23 @@ const store = createStore(
   composeEnhancers(applyMiddleware(Thunk))
 )
 
+// TODO: There should be a way to apply Pormise to the middleware to create
+// a initial state
+getCurrentUser()
+  .then( User => {
+    const store = createStore(
+      Reducers,
+      { User: R.when(R.isNil, R.always({}))(User) },
+      composeEnhancers(applyMiddleware(Thunk))
+    )
 
-ReactDom.render(
-  <Provider store={store}>
-    <MuiThemeProvider>
-      <App />
-    </MuiThemeProvider>
-  </Provider>,
-  document.getElementById('buybuy')
-)
+    ReactDom.render(
+      <Provider store={store}>
+        <MuiThemeProvider>
+          <App />
+        </MuiThemeProvider>
+      </Provider>,
+      document.getElementById('buybuy')
+    )
+  })
+

@@ -1,1 +1,8 @@
-
+.landing-background {
+  background: url('../../../img/landing-bg.jpg') no-repeat center center scroll;
+  background-size: cover;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  cursor: default;
+}

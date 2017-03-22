@@ -3,23 +3,15 @@ import React, { Component } from 'react'
 import { connect }          from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import { Card, CardHeader, CardMedia, CardTitle } from 'material-ui/Card'
+import AutoComplete from 'material-ui/Autocomplete'
+import { 
+  CardHeader, 
+  CardMedia, 
+  CardTitle 
+} from 'material-ui/Card'
 
 import { Product } from '../../actions/index.js'
 import './home.scss'
-
-const styles = {
-    root: {
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'space-around',
-        },
-    gridList: {
-          width: 500,
-          height: 450,
-          overflowY: 'auto',
-        },
-};
 
 
 class Home extends Component {
@@ -30,27 +22,50 @@ class Home extends Component {
 
   render() {
     return (
-      <div className='d-flex flex-column'>
-        {
-          R.map( product => (
-            <Link to={`/product/${product.id}`}>
-              <Card key={product.id}>
-                <CardHeader
-                  title={product.user.name}
-                  avatar={product.user.profile_image}
-                  style={{padding: '10px 5px'}}
-                  textStyle={{verticalAlign: 'middle'}}
-                />
-                <CardMedia><img src={product.images[0].path}/></CardMedia>
-                <CardTitle 
-                  title={product.name} 
-                  subtitle={product.price}
-                  subtitleColor='red'
-                />
-              </Card>
-            </Link>
-          ))(this.props.product_list)
-        }
+      <div>
+        <div className='landing-background hm-black-strong' />
+        <div className='container'>
+          <form onSubmit={ e => e.preventDefault() }>
+            {
+              /* 
+               * This Autocomplete will cause some padding issue 
+               * when refresing page
+               * */
+            }
+            <AutoComplete
+              fullWidth
+              floatingLabelText='Search'
+              dataSource={[]}
+              autoComplete='off'
+            />
+          </form>
+          <div className='row'>
+            {
+              R.map( product => (
+                <div 
+                  key={product.id}
+                  className='col-sm-6 col-md-4 hoverable'
+                >
+                  <CardHeader
+                    title={product.user.name}
+                    avatar={product.user.profile_image}
+                    style={{padding: '10px 5px'}}
+                    textStyle={{verticalAlign: 'middle'}}
+                  />
+                  <Link to={`/product/${product.id}`}>
+                    <CardMedia>
+                      <img src={product.images[0].path} height='150px'/>
+                    </CardMedia>
+                    <div className='d-flex justify-content-start'>
+                      <p className='p-2'>{product.name}</p>
+                      <p className='ml-auto p-2'>${product.price}</p>
+                    </div>
+                  </Link>
+                </div>
+              ))(this.props.product_list)
+            }
+          </div>
+        </div>
       </div>
     )
   }

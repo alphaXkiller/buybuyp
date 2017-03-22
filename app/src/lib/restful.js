@@ -8,8 +8,8 @@ import { getToken } from './auth.js'
 
 const PARAMS_REGEX      = /:[a-zA-Z]*/
 const INDEX_AFTER_COLON = 1
-const baseURL        = 'http://127.0.0.1:3031'
-// const baseURL           = 'http://buybuy-api.us-west-2.elasticbeanstalk.com'
+// const baseURL        = 'http://127.0.0.1:3031'
+const baseURL           = 'http://buybuy-api.us-west-2.elasticbeanstalk.com'
 
 
 const _key_list = R.match(PARAMS_REGEX)

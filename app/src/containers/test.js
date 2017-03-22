@@ -262,17 +262,27 @@ const initMap = events => {
 
   polygon.setMap(map)
  
-  const marker = new google.maps.Marker({
-    position: { lat: 36.16622, lng: -115.140216 },
-    map: map,
-    title: 'Zedd',
-    icon: image
-  })
 
   R.map(event => {
     const marker = new google.maps.Marker(
       R.merge(event, {map})
     )
+
+    marker.addListener('click', () => {
+      navigator.geolocation.getCurrentPosition( ({coords}) => {
+        const directions_render = new google.maps.DirectionsRenderer()
+        const directions_service = new google.maps.DirectionsService()
+        directions_render.setMap(map)
+
+        directions_service.route({
+          origin: {lat: coords.latitude, lng: coords.longitude},
+          destination: event.position,
+          travelMode: 'DRIVING'
+        }, (res, status) => { 
+          if (status === 'OK') directions_render.setDirections(res) 
+        })
+      })
+    })
   })(events)
 }
 
@@ -308,31 +318,47 @@ class Test extends Component {
 
   constructor() {
     super()
+    this.onNewRequest = this.onNewRequest.bind(this)
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('here', this.state.selected_event)
     if (R.complement(R.either(R.isEmpty, R.isNil))(this.state.selected_event))
       initMap([this.state.selected_event])
+
+    if (R.both(
+      R.isEmpty,
+      R.complement(R.equals(prevState.selected_event))
+    )(this.state.selected_event))
+      initMap(this.state.events)
     // else if (prevState.selected_event === this.state.selected_event)
     //   initMap(this.state.events)
   }
 
   componentDidMount() {
     initMap(this.state.events)
-    navigator.geolocation.getCurrentPosition(console.log)
+    navigator.geolocation.getCurrentPosition( ({coords}) => this.setState({
+      current_geo: { lat: coords.latitude, lng: coords.longitude }
+    }))
   }
 
   submit = e => {
     e.preventDefault()
   }
 
-  onUpdateInput = event => {
-    console.log(event)
-    this.setState({
-      selected_event: R.find(R.propEq('title', event))(this.state.events)
-    })
+  onNewRequest = (request, index) => {
+    const selected_event =
+      R.find(R.propEq('title', request))(this.state.events) || {}
+
+    R.when(
+      R.complement(R.isEmpty),
+      selected_event => this.setState({selected_event})
+    )(selected_event)
   }
+
+  onUpdateInput = (text, list) => R.when(
+    () => this.setState({selected_event: {}}),
+    R.isEmpty
+  )(text)
 
   render() {
     return (
@@ -344,6 +370,7 @@ class Test extends Component {
             name='event'
             fullWidth
             hintText='zedd'
+            onNewRequest={this.onNewRequest}
             onUpdateInput={this.onUpdateInput}
             dataSource={R.pluck('title')(this.state.events)}
           />

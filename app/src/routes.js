@@ -22,7 +22,7 @@ const RouteFunctor = [
 ]
 
 
-const userNotLogin = R.compose(R.isNil, R.prop('user'))
+const userNotLogin = R.compose(R.isEmpty, R.prop('user'))
 
 
 const dashboardPath = R.compose(R.test(/^\/dashboard/), R.prop('path'))
@@ -31,15 +31,20 @@ const dashboardPath = R.compose(R.test(/^\/dashboard/), R.prop('path'))
 const requiredLogin = R.allPass([userNotLogin, dashboardPath])
 
 
-const RouteActor = route => <Route 
-  path={route.path} 
-  exact={route.exact} 
-  render={
-    props => (
-      <route.component {...props} routes={route.sub_routes}/>
-  )}
-/>
-
+const RouteActor = route => {
+  return (
+    <Route 
+      path={route.path} 
+      exact={route.exact} 
+      render={
+        props => (
+          requiredLogin(route) ? 
+            <Redirect to='/login' />
+          : <route.component {...props} routes={route.sub_routes}/>
+      )}
+    />
+  )
+}
 
 export {
   RouteFunctor,

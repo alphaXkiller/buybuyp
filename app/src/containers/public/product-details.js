@@ -11,7 +11,7 @@ class ProductDetails extends Component {
   }
 
   render = () => (
-    <div>
+    <div className='mt-5'>
       <Card>
         <CardHeader 
           title={this.props.product.name}
@@ -20,7 +20,7 @@ class ProductDetails extends Component {
         <CardMedia style={{padding: '10px'}}>
           {
             R.map( image => 
-              <img src={image.path} /> 
+              <img key={image.id} src={image.path} /> 
             )(this.props.product.images)
           }
         </CardMedia>

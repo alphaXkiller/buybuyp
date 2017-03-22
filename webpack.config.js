@@ -20,27 +20,6 @@ module.exports = {
     path: Path.resolve(__dirname, 'app/public/assets'),
     publicPath: '/assets/'
   },
-  devServer: {
-    contentBase: Path.resolve(__dirname, 'app/'),
-    port: 3030,
-    hot: true,
-    historyApiFallback: true,
-    compress: true
-  },
-  plugins: [
-    new Webpack.HotModuleReplacementPlugin(),
-    new Webpack.DefinePlugin({
-      'process.env': {'NODE_ENV': JSON.stringify('production')}
-    }),
-    new CompressionPlugin({
-      asset: '[path].gz[query]',
-      algorithm: 'gzip',
-      test: /\.js$|\.html$|\.css$/,
-      threshold: 10240,
-      minRatio: 0.8
-    }),
-    extractSass
-  ],
   module: {
     rules: [
       {
@@ -62,9 +41,30 @@ module.exports = {
       },
       {
         test: /\.(jpg|png|woff|woff2|ttf|svg|eot)$/,
-        use: 'file-loader'
-      },
+        use: 'file-loader?outputPath=img/&publicPath=img/'
+      }
     ]
-  }
+  },
+  devServer: {
+    contentBase: Path.resolve(__dirname, 'app/'),
+    port: 3030,
+    hot: true,
+    historyApiFallback: true,
+    compress: true
+  },
+  plugins: [
+    new Webpack.HotModuleReplacementPlugin(),
+    // new Webpack.DefinePlugin({
+    //   'process.env': {'NODE_ENV': JSON.stringify('production')}
+    // }),
+    new CompressionPlugin({
+      asset: '[path].gz[query]',
+      algorithm: 'gzip',
+      test: /\.js$|\.html$|\.css$/,
+      threshold: 10240,
+      minRatio: 0.8
+    }),
+    extractSass
+  ],
 }
 
