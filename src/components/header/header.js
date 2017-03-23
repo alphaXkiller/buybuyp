@@ -2,6 +2,9 @@ import R        from 'ramda'
 import React    from 'react'
 import { Link } from 'react-router-dom'
 
+import IconMenu   from 'material-ui/IconMenu'
+import IconButton from 'material-ui/IconButton'
+
 import './header.scss'
 
 const Header = ({show_header_color, onClickShowNav}) => {
@@ -25,7 +28,9 @@ const Header = ({show_header_color, onClickShowNav}) => {
           <i className='fa fa-bars fa-lg'></i>
         </button>
         <Link to='/' style={{fontSize: '20px'}}>Buy Buy</Link>
-        <div />
+        <div style={{color: '#0275d8'}}>
+          <i className='fa fa-user-o fa-lg' />
+        </div>
       </div>
     </header>
   )

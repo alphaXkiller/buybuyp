@@ -13,11 +13,11 @@ const extractSass = new ExtractTextPlugin({
 
 module.exports = {
   entry: {
-    index:'./app/src/index.js'
+    index:'./src/index.js'
   },
   output: {
     filename: '[name].js',
-    path: Path.resolve(__dirname, 'app/public/assets'),
+    path: Path.resolve(__dirname, 'public/assets'),
     publicPath: '/assets/'
   },
   module: {
@@ -40,13 +40,17 @@ module.exports = {
         })
       },
       {
-        test: /\.(jpg|png|woff|woff2|ttf|svg|eot)$/,
+        test: /\.(woff|woff2|ttf|eot)$/,
+        use: 'file-loader?outputPath=font/&publicPath=font/'
+      },
+      {
+        test: /\.(jpg|png|svg|gif)$/,
         use: 'file-loader?outputPath=img/&publicPath=img/'
       }
     ]
   },
   devServer: {
-    contentBase: Path.resolve(__dirname, 'app/'),
+    contentBase: Path.resolve(__dirname, 'src/'),
     port: 3030,
     hot: true,
     historyApiFallback: true,

@@ -3,7 +3,7 @@ import Bluebird from 'bluebird'
 import Firebase from 'firebase/app'
 import 'firebase/auth'
 
-import Firebase_config from '../../config/firebase.js'
+import Firebase_config from '../config/firebase.js'
 import { notNil } from '../lib/helpers.js'
 
 Firebase.initializeApp(Firebase_config)
