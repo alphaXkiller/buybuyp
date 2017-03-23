@@ -82,17 +82,15 @@ class App extends Component {
   )(window.scrollY)
 
 
-  onClickCloseUserMenu = () => {
-    this.setState({open_user_menu: false})
+  onClickCloseUserMenu = (reason) => {
+    if (reason === 'clickAway')
+      this.setState({open_user_menu: false})
   }
 
 
   onClickOpenUserMenu = e => {
     e.preventDefault()
-    this.setState({
-      open_user_menu: true,
-      anchorEl: e.currentTarget
-    })
+    this.setState({open_user_menu: true})
   }
 
 
@@ -169,8 +167,7 @@ class App extends Component {
                 onClickShowNav       : this.onClickShowMenu,
                 onClickOpenUserMenu  : this.onClickOpenUserMenu,
                 onClickCloseUserMenu : this.onClickCloseUserMenu,
-                user                 : this.props.user,
-                anchorEl             : this.state.anchorEl
+                user                 : this.props.user
               })
             }
             <main>

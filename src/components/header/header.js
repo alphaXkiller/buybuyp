@@ -27,6 +27,7 @@ const Header = props => {
         </button>
         <Link to='/' style={{fontSize: '20px'}}>Buy Buy</Link>
         <button 
+          id='header-user'
           className='buybuy-btn' 
           onTouchTap={props.onClickOpenUserMenu}
         >
@@ -34,11 +35,22 @@ const Header = props => {
           <Popover
             open={props.open_user_menu}
             onRequestClose={props.onClickCloseUserMenu}
-            anchorEl={props.anchorEl}
+            anchorEl={document.getElementById('header-user')}
+            animated={false}
           >
             <Menu>
-              <MenuItem primaryText='Log in' />
-              <MenuItem primaryText='Sign up' />
+              <Link 
+                to='/login' 
+                onClick={ e => props.onClickCloseUserMenu('clickAway') }
+              >
+                <MenuItem primaryText='Log in' />
+              </Link>
+              <Link 
+                to='/signup' 
+                onClick={ e => props.onClickCloseUserMenu('clickAway') }
+              >
+                <MenuItem primaryText='Sign up' />
+              </Link>
             </Menu>
           </Popover>
         </button>
