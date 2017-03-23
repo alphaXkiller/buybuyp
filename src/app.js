@@ -30,7 +30,8 @@ class App extends Component {
       show_menu: false,
       show_login: false,
       show_signup: false,
-      show_header_color: false
+      show_header_color: window.scrollY > 0,
+      open_user_menu: false
     }
   }
 
@@ -79,6 +80,20 @@ class App extends Component {
     () => this.setState({show_header_color: true}),
     () => this.setState({show_header_color: false})
   )(window.scrollY)
+
+
+  onClickCloseUserMenu = () => {
+    this.setState({open_user_menu: false})
+  }
+
+
+  onClickOpenUserMenu = e => {
+    e.preventDefault()
+    this.setState({
+      open_user_menu: true,
+      anchorEl: e.currentTarget
+    })
+  }
 
 
   onClickLogout = e => {
@@ -132,15 +147,15 @@ class App extends Component {
         <div>
           {
             Nav({
-              user: this.props.user,
-              logout: this.onClickLogout,
-              show_menu : this.state.show_menu,
-              show_login: this.state.show_login,
-              show_signup: this.state.show_signup,
-              onClickHideMenu: this.onClickHideMenu,
-              onClickShowModal: this.onClickShowModal,
-              onClickToggleLogin: this.onClickToggleLogin,
-              onClickToggleSignup: this.onClickToggleSignup
+              user                : this.props.user,
+              logout              : this.onClickLogout,
+              show_menu           : this.state.show_menu,
+              show_login          : this.state.show_login,
+              show_signup         : this.state.show_signup,
+              onClickHideMenu     : this.onClickHideMenu,
+              onClickShowModal    : this.onClickShowModal,
+              onClickToggleLogin  : this.onClickToggleLogin,
+              onClickToggleSignup : this.onClickToggleSignup
             })
           }
           <div 
@@ -149,8 +164,13 @@ class App extends Component {
           >
             {
               Header({
-                show_header_color: this.state.show_header_color,
-                onClickShowNav: this.onClickShowMenu
+                show_header_color    : this.state.show_header_color,
+                open_user_menu       : this.state.open_user_menu,
+                onClickShowNav       : this.onClickShowMenu,
+                onClickOpenUserMenu  : this.onClickOpenUserMenu,
+                onClickCloseUserMenu : this.onClickCloseUserMenu,
+                user                 : this.props.user,
+                anchorEl             : this.state.anchorEl
               })
             }
             <main>

@@ -1,15 +1,13 @@
 import R        from 'ramda'
 import React    from 'react'
 import { Link } from 'react-router-dom'
-
-import IconMenu   from 'material-ui/IconMenu'
-import IconButton from 'material-ui/IconButton'
+import Menu from 'material-ui/Menu'
+import MenuItem from 'material-ui/MenuItem'
+import Popover from 'material-ui/Popover'
 
 import './header.scss'
 
-const Header = ({show_header_color, onClickShowNav}) => {
-  const header_bg_color = show_header_color ? ' bg-color' : ''
-
+const Header = props => {
   return (
     <header>
       <div
@@ -17,23 +15,37 @@ const Header = ({show_header_color, onClickShowNav}) => {
           R.join(' ', [
             'navbar navbar-trans',
             'fixed-top justify-content-between flex-row',
-            header_bg_color
+            props.show_header_color ? ' bg-color' : ''
           ])
         }
         >
         <button
           className='buybuy-btn'
-          onTouchTap={onClickShowNav}
+          onTouchTap={props.onClickShowNav}
         >
           <i className='fa fa-bars fa-lg'></i>
         </button>
         <Link to='/' style={{fontSize: '20px'}}>Buy Buy</Link>
-        <div style={{color: '#0275d8'}}>
+        <button 
+          className='buybuy-btn' 
+          onTouchTap={props.onClickOpenUserMenu}
+        >
           <i className='fa fa-user-o fa-lg' />
-        </div>
+          <Popover
+            open={props.open_user_menu}
+            onRequestClose={props.onClickCloseUserMenu}
+            anchorEl={props.anchorEl}
+          >
+            <Menu>
+              <MenuItem primaryText='Log in' />
+              <MenuItem primaryText='Sign up' />
+            </Menu>
+          </Popover>
+        </button>
       </div>
     </header>
   )
 }
+
 
 export default Header
