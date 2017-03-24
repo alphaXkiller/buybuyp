@@ -20,18 +20,13 @@ import './style/main.scss'
 class App extends Component {
   constructor() {
     super()
-    this.showHeaderBgColor   = this.showHeaderBgColor.bind(this)
-    this.onClickLogout       = this.onClickLogout.bind(this)
-    this.onClickShowMenu     = this.onClickShowMenu.bind(this)
-    this.onClickHideMenu     = this.onClickHideMenu.bind(this)
-    this.onClickToggleLogin  = this.onClickToggleLogin.bind(this)
-    this.onClickToggleSignup = this.onClickToggleSignup.bind(this)
-    this.state               = {
-      show_menu: false,
-      show_login: false,
-      show_signup: false,
-      show_header_color: window.scrollY > 0,
-      open_user_menu: false
+    this.state = {
+      show_menu         : false,
+      show_login        : false,
+      show_signup       : false,
+      show_user_menu    : false,
+      show_header_color : window.scrollY > 0,
+      open_login_modal  : false
     }
   }
 
@@ -82,21 +77,14 @@ class App extends Component {
   )(window.scrollY)
 
 
-  onClickCloseUserMenu = (reason) => {
-    if (reason === 'clickAway')
-      this.setState({open_user_menu: false})
+  onClickCloseLoginModal = (reason) => {
+    this.setState({open_login_modal: false})
   }
 
 
-  onClickOpenUserMenu = e => {
+  onClickOpenLoginModal = e => {
     e.preventDefault()
-    this.setState({open_user_menu: true})
-  }
-
-
-  onClickLogout = e => {
-    this.props.logout()
-    this.onClickHideMenu()
+    this.setState({open_login_modal: true})
   }
 
 
@@ -122,38 +110,30 @@ class App extends Component {
   }
 
 
-  onClickToggleLogin = e =>{
+  onClickShowUserMenu = e => {
     e.preventDefault()
-    this.setState({
-      show_signup: false,
-      show_login: !this.state.show_login 
-    })
+    this.setState({show_user_menu: true})
   }
 
 
-  onClickToggleSignup = e => {
-    e.preventDefault
-    this.setState({
-      show_login: false,
-      show_signup: !this.state.show_signup
-    })
+  onClickHideUserMenu = open => {
+    this.setState({show_user_menu: false})
   }
- 
+
+
+  onClickLogout = e => {
+    this.props.logout()
+    this.setState({show_user_menu: false})
+  }
+
   render() {
     return (
       <Router>
         <div>
           {
             Nav({
-              user                : this.props.user,
-              logout              : this.onClickLogout,
               show_menu           : this.state.show_menu,
-              show_login          : this.state.show_login,
-              show_signup         : this.state.show_signup,
               onClickHideMenu     : this.onClickHideMenu,
-              onClickShowModal    : this.onClickShowModal,
-              onClickToggleLogin  : this.onClickToggleLogin,
-              onClickToggleSignup : this.onClickToggleSignup
             })
           }
           <div 
@@ -162,12 +142,16 @@ class App extends Component {
           >
             {
               Header({
-                show_header_color    : this.state.show_header_color,
-                open_user_menu       : this.state.open_user_menu,
-                onClickShowNav       : this.onClickShowMenu,
-                onClickOpenUserMenu  : this.onClickOpenUserMenu,
-                onClickCloseUserMenu : this.onClickCloseUserMenu,
-                user                 : this.props.user
+                show_user_menu         : this.state.show_user_menu,
+                show_header_color      : this.state.show_header_color,
+                open_login_modal       : this.state.open_login_modal,
+                onClickShowUserMenu    : this.onClickShowUserMenu,
+                onClickHideUserMenu    : this.onClickHideUserMenu,
+                onClickShowMenu        : this.onClickShowMenu,
+                onClickOpenLoginModal  : this.onClickOpenLoginModal,
+                onClickCloseLoginModal : this.onClickCloseLoginModal,
+                onClickLogout          : this.onClickLogout,
+                user                   : this.props.user
               })
             }
             <main>

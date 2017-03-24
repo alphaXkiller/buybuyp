@@ -1,0 +1,22 @@
+.login-background {
+  background: url('../../../img/landing-bg.jpg') no-repeat center center scroll;
+  background-size: cover;
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  filter: blur(5px);
+}
+
+.login-content {
+  position: fixed;
+  z-index: 1000;
+  width: 100%;
+
+  .login-bg {
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 20px;
+  }
+}

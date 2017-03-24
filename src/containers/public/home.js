@@ -23,7 +23,7 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <div className='landing-background hm-black-strong' />
+        <div className='landing-background' />
         <div className='container'>
           <form onSubmit={ e => e.preventDefault() }>
             {
