@@ -15,10 +15,14 @@ const notEquals = R.curry((a, b) => R.complement(R.equals(a))(b))
 const nilOrEmpty = R.either(R.isNil, R.isEmpty)
 
 
+const mapIndexed = R.addIndex(R.map)
+
+
 export {
   notEmpty,
   notNil,
   notEquals,
   nilOrEmpty,
-  notNilOrEmpty
+  notNilOrEmpty,
+  mapIndexed
 }

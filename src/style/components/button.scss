@@ -1,13 +1,19 @@
 .buybuy-btn {
-  font-weight: normal;
-  line-height: 1.25;
-  color: #0275d8;
-  vertical-align: middle;
-  transition: all 0.2s ease-in-out;
-  border: none;
-  background: transparent;
-}
+  font-weight    : normal;
+  line-height    : 1.25;
+  color          : #0275d8;
+  vertical-align : middle;
+  transition     : all 0.2s ease-in-out;
+  border         : none;
+  background     : transparent;
+  cursor         : pointer;
 
-.buybuy-btn:focus {
-  outline: none;
+  &:focus {
+    outline: none;
+  }
+
+  &.primary {
+    color: white;
+    background-color: #0275d8;
+  }
 }

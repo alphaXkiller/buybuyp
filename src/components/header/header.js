@@ -11,7 +11,7 @@ import LoginForm from '../shared-components/form/login.js'
 import './header.scss'
 
 const _renderLoginUser = props => (
-  <button>
+  <button className='buybuy-btn'>
     <Avatar 
       id='user-avatar' 
       src={props.user.profile_image}
@@ -21,6 +21,7 @@ const _renderLoginUser = props => (
       open={props.show_user_menu}
       anchorEl={document.getElementById('user-avatar')}
       onRequestClose={props.onClickHideUserMenu}
+      animated={false}
       animation={PopoverAnimationVertical}
     >
       <Menu>

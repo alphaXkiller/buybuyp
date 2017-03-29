@@ -3,15 +3,61 @@ import React, { Component } from 'react'
 import { connect }          from 'react-redux'
 import { Link } from 'react-router-dom'
 
-import AutoComplete from 'material-ui/Autocomplete'
-import { 
-  CardHeader, 
-  CardMedia, 
-  CardTitle 
-} from 'material-ui/Card'
+import AutoComplete         from 'material-ui/Autocomplete'
+import Divider              from 'material-ui/Divider'
+import Avatar               from 'material-ui/Avatar'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
+import ContentAdd from 'material-ui/svg-icons/content/add'
 
 import { Product } from '../../actions/index.js'
+import { mapIndexed } from '../../lib/helpers.js'
 import './home.scss'
+
+
+const _renderProduct = product => (
+  <div
+    key={product.id}
+    className='col-sm-6 col-md-4 mt-4'
+  >
+    <div className='hoverable'>
+      <Link to={`/product/${product.id}`}>
+        <div 
+          style={{
+            background: `url(${product.images[0].path}) no-repeat center center`,
+            backgroundSize: 'cover',
+            height: '200px'
+          }}
+        />
+        <div className='text-center mt-3'>
+          <div className='p-3'>
+            <h4>{product.name}</h4>
+            <p>{product.description}</p>
+          </div>
+          <Divider />
+          <div className='container'>
+            <div className='row align-items-center justify-content-between p-2'>
+              <p>${product.price}</p>
+              <div>
+                <Avatar src={product.user.profile_image}/>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Link>
+      </div>
+  </div>
+)
+
+
+const _renderProductGroup = (list, index) => (
+  <div key={index} className='row'>{R.map(_renderProduct)(list)}</div>
+)
+
+
+const _renderProductList = R.compose(
+  mapIndexed(_renderProductGroup),
+  R.splitEvery(3)
+)
 
 
 class Home extends Component {
@@ -39,31 +85,9 @@ class Home extends Component {
               autoComplete='off'
             />
           </form>
-          <div className='row'>
-            {
-              R.map( product => (
-                <div 
-                  key={product.id}
-                  className='col-sm-6 col-md-4 hoverable'
-                >
-                  <CardHeader
-                    title={product.user.name}
-                    avatar={product.user.profile_image}
-                    style={{padding: '10px 5px'}}
-                    textStyle={{verticalAlign: 'middle'}}
-                  />
-                  <Link to={`/product/${product.id}`}>
-                    <CardMedia>
-                      <img src={product.images[0].path} height='150px'/>
-                    </CardMedia>
-                    <div className='d-flex justify-content-start'>
-                      <p className='p-2'>{product.name}</p>
-                      <p className='ml-auto p-2'>${product.price}</p>
-                    </div>
-                  </Link>
-                </div>
-              ))(this.props.product_list)
-            }
+          { _renderProductList(this.props.product_list) }
+          <div className='d-flex col-sm-12 justify-content-center p-4'>
+            <FloatingActionButton><ContentAdd/></FloatingActionButton>
           </div>
         </div>
       </div>

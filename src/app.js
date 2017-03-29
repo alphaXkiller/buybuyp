@@ -10,6 +10,7 @@ import {
 } from './routes.js'
 import Nav    from './components/nav/nav.js'
 import Header from './components/header/header.js'
+import Footer from './components/footer/footer.js'
 
 import { User }                        from './actions/index.js'
 import { notEmpty, notNil, notEquals } from './lib/helpers.js'
@@ -43,26 +44,8 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    let isNewLogin
-    let isSignupSuccessfully
-
-    if (this.props.user) {
-      isNewLogin = R.both(
-        notNil,
-        notEquals(R.path(['user', 'uid'])(prevProps)),
-      )(this.props.user.uid)
-
-      isSignupSuccessfully = R.both(
-        notNil,
-        notEquals(R.path(['user', 'signup_status'])(prevProps))
-      )(this.props.user.signup_status)
-      
-      if (isNewLogin || isSignupSuccessfully)
-        this.setState({
-          show_login: false,
-          show_signup: false
-        })
-    }
+    if (prevProps.user !== this.props.user)
+      this.setState({show_user_menu: false})
   }
 
   componentWillUnmount() {
@@ -116,14 +99,14 @@ class App extends Component {
   }
 
 
-  onClickHideUserMenu = open => {
-    this.setState({show_user_menu: false})
+  onClickHideUserMenu = reason => {
+    if (reason === 'clickAway')
+      this.setState({show_user_menu: false})
   }
 
 
   onClickLogout = e => {
     this.props.logout()
-    this.setState({show_user_menu: false})
   }
 
   render() {
@@ -165,7 +148,7 @@ class App extends Component {
                 ))
               }
             </main>
-            <footer></footer>
+            { Footer() }
           </div>
         </div>
       </Router>

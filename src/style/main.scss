@@ -1,6 +1,7 @@
 $fa-font-path: "~font-awesome/fonts";
 @import "~font-awesome/scss/font-awesome";
 @import '~bootstrap/scss/bootstrap.scss';
+@import '~mdbootstrap/sass/mdb.scss';
 
 @import 'overwrite.scss';
 @import 'variable.scss';
@@ -18,4 +19,8 @@ body {
 .mask-white {
   background-color: rgba(255, 255, 255, 0.1);
   height: 100%;
+}
+
+.no-padding {
+  padding: 0 !important
 }
