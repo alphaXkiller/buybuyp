@@ -4,9 +4,9 @@ $fa-font-path: "~font-awesome/fonts";
 @import '~mdbootstrap/sass/mdb.scss';
 
 @import 'overwrite.scss';
-@import 'variable.scss';
 
-@import './components/button.scss';
+@import './components/_button.scss';
+@import './helpers/_variable.scss';
 
 body {
   background-color: $color-primary
