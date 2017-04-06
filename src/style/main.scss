@@ -1,12 +1,10 @@
-$fa-font-path: "~font-awesome/fonts";
+@import './helpers/_variable.scss';
 @import "~font-awesome/scss/font-awesome";
 @import '~bootstrap/scss/bootstrap.scss';
-@import '~mdbootstrap/sass/mdb.scss';
-
 @import 'overwrite.scss';
 
 @import './components/_button.scss';
-@import './helpers/_variable.scss';
+@import './containers/_home.scss';
 
 body {
   background-color: $color-primary

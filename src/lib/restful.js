@@ -31,7 +31,8 @@ const parseKeys = R.curry( (url, keys) => {
 
 const parseQuery = R.curry( (url, query) => {
   const query_url = url.concat('?')
-  const query_list = R.toPairs(query)
+  //remove undefined field in query
+  const query_list = R.toPairs(JSON.parse(JSON.stringify(query)))
   const appendQuery = (acc, val) => {
     let lastChar = acc.charAt(acc.length - 1)
     if (lastChar === '?')
@@ -60,7 +61,7 @@ const solution = (instance, url, body) => ({
 const apiRequest = ({method, path, keys, query, body}) => {
 
   let _url = Path_map[path]
-  
+
   if (R.isNil(_url)) throw new Error('WRONG PATH')
 
   if (keys) _url = parseKeys(_url)(keys)
