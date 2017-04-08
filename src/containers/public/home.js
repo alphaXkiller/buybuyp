@@ -11,8 +11,8 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 
 import { Product } from '../../actions/index.js'
 import { mapIndexed } from '../../lib/helpers.js'
-import './home.scss'
 
+const DEFAULT_LIMIT = 2;
 
 const _renderProduct = product => (
   <div
@@ -61,8 +61,32 @@ const _renderProductList = R.compose(
 
 
 class Home extends Component {
+  constructor() {
+    super()
+    this.state = {
+      keyword: ''
+    }
+  }
+
+
   componentDidMount() {
-    this.props.getProductList({ page: 1, keyword: '' })
+    this.props.searchProduct({ page: 1, limit: DEFAULT_LIMIT })
+  }
+
+
+  onClickLoadMoreProducts = e => {
+    this.props.searchProductMore({
+      page    : R.inc(this.props.page),
+      limit   : DEFAULT_LIMIT,
+      keyword : this.state.keyword
+    }) 
+  }
+
+
+  updateKeyword = (keyword) => {
+    this.setState({keyword}, () =>
+      this.props.searchProduct({page: 1, limit: DEFAULT_LIMIT , keyword}) 
+    )
   }
 
 
@@ -71,23 +95,20 @@ class Home extends Component {
       <div>
         <div className='landing-background' />
         <div className='container'>
-          <form onSubmit={ e => e.preventDefault() }>
-            {
-              /* 
-               * This Autocomplete will cause some padding issue 
-               * when refresing page
-               * */
-            }
-            <AutoComplete
-              fullWidth
-              floatingLabelText='Search'
-              dataSource={[]}
-              autoComplete='off'
-            />
-          </form>
+          <AutoComplete
+            fullWidth
+            floatingLabelText='Search'
+            dataSource={[]}
+            autoComplete='off'
+            onNewRequest={this.updateKeyword}
+          />
           { _renderProductList(this.props.product_list) }
           <div className='d-flex col-sm-12 justify-content-center p-4'>
-            <FloatingActionButton><ContentAdd/></FloatingActionButton>
+            <FloatingActionButton
+              onTouchTap={this.onClickLoadMoreProducts}
+            >
+              <ContentAdd/>
+            </FloatingActionButton>
           </div>
         </div>
       </div>
@@ -97,15 +118,15 @@ class Home extends Component {
 
 
 const mapStateToProps = state => ({
-  product_list: state.Product.rows,
-  product_count: state.Product.count
+  product_list: state.Product_search.rows,
+  product_count: state.Product_search.count,
+  page: R.path(['Product_search', 'params', 'page'])(state)
 })
 
 
 const mapDispatchToProps = dispatch => ({
-  getProductList: ({page, keyword}) => dispatch(
-    Product.search({page, keyword})
-  )
+  searchProduct: query => dispatch(Product.search(query)),
+  searchProductMore: query => dispatch(Product.searchMore(query))
 })
 
 

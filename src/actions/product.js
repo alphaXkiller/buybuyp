@@ -12,6 +12,8 @@ const TYPE = {
   get_product_details_success : 'get_product_details_successfully',
   search_pending              : 'search_pending',
   search_successfully         : 'search_successfully',
+  search_more_pending         : 'search_more_pending',
+  search_more_success         : 'search_more_successfully',
 
   // ==========
   //  empty product state
@@ -114,11 +116,24 @@ const public_getProductDetails = ({id}) => (dispatch, getState) =>
 
 
 // =============================================================================
+// =============================================================================
 // LOGGIN NOT REQUIRED
 // =============================================================================
+// =============================================================================
+
 
 // ===========================
-// get product detials
+// _search
+// ===========================
+const _search = query => Api({
+  method: 'get',
+  path:'product_search',
+  query
+})
+
+
+// ===========================
+// search product init action
 // ===========================
 const searchStart = () => ({ type: TYPE.search_pending })
 
@@ -127,16 +142,30 @@ const searchSuccessfully = payload => ({
   payload 
 })
 
-const search = ({page, keyword}) => (dispatch, getState) => Bluebird
+const search = ({page, keyword, limit}) => (dispatch, getState) => Bluebird
   .resolve(dispatch(searchStart()))
 
-  .then( () => Api({
-    method: 'get',
-    path: 'product_search'
-  }) )
+  .then( () => _search({page, keyword, limit}) )
 
   .then( product => dispatch(searchSuccessfully(product.data)) )
 
+
+// ===========================
+// search product more action
+// ===========================
+const searchMoreStart = () => ({ type: TYPE.search_pending })
+
+const searchMoreSuccessfully = payload => ({
+  type: TYPE.search_more_success, 
+  payload
+})
+
+const searchMore = ({page, keyword, limit}) => (dispatch, getState) => Bluebird
+  .resolve(dispatch(searchMoreStart()))
+
+  .then( () => _search({page, keyword, limit}))
+
+  .then( product => dispatch(searchMoreSuccessfully(product.data)) )
 
 
 export default {
@@ -144,8 +173,9 @@ export default {
   emptyPostedProduct,
   getProductDetails,
   search,
+  searchMore,
   postProduct,
   uploadImage,
-  public_getProductDetails 
+  public_getProductDetails
 }
 
