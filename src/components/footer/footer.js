@@ -1,5 +1,4 @@
 import React from 'react'
-import './footer.scss'
 
 const Footer = props => (
   <footer className='d-flex justify-content-center align-items-center'>

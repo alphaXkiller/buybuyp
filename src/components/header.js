@@ -7,8 +7,7 @@ import Dialog   from 'material-ui/Dialog'
 import Avatar   from 'material-ui/Avatar'
 import Popover, { PopoverAnimationVertical }  from 'material-ui/Popover'
 
-import LoginForm from '../shared-components/form/login.js'
-import './header.scss'
+import LoginForm from './shared-components/form/login.js'
 
 const _renderLoginUser = props => (
   <button className='buybuy-btn'>
@@ -25,7 +24,6 @@ const _renderLoginUser = props => (
       animation={PopoverAnimationVertical}
     >
       <Menu>
-        <MenuItem primaryText='Dashboard' />
         <MenuItem 
           primaryText='Logout' 
           onTouchTap={props.onClickLogout}
@@ -62,9 +60,8 @@ const Header = props => {
     <header
       className={
         R.join(' ', [
-          'navbar navbar-trans',
+          'navbar',
           'fixed-top justify-content-between flex-row',
-          props.show_header_color ? ' bg-color' : ''
         ])
       }
     >

@@ -6,11 +6,18 @@
 @import 'overwrite.scss';
 
 @import './components/_button.scss';
+@import './components/_drawer.scss';
+@import './components/_footer.scss';
+
 @import './containers/_home.scss';
 @import './containers/_login.scss';
 
 body {
   background-color: $color-primary
+}
+
+main {
+  margin-top: 52px;
 }
 
 .overflow-hidden {
