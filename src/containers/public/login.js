@@ -3,8 +3,6 @@ import React, { Component } from 'react'
 
 import LoginForm from '../../components/shared-components/form/login.js'
 
-import './login.scss'
-
 class Login extends Component {
   render() {
     return (
