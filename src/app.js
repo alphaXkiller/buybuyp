@@ -8,8 +8,8 @@ import {
   RouteFunctor, 
   RouteActor 
 } from './routes.js'
-import Nav    from './components/nav/nav.js'
-import Header from './components/header/header.js'
+import Nav    from './components/nav.js'
+import Header from './components/header.js'
 import Footer from './components/footer/footer.js'
 
 import { User }                        from './actions/index.js'
@@ -26,14 +26,10 @@ class App extends Component {
       show_login        : false,
       show_signup       : false,
       show_user_menu    : false,
-      show_header_color : window.scrollY > 0,
       open_login_modal  : false
     }
   }
 
-  componentDidMount() {
-    window.addEventListener('scroll', this.showHeaderBgColor)
-  }
 
   shouldComponentUpdate(nextProps, nextState) {
     const same_state = R.equals(this.state)(nextState)
@@ -43,24 +39,14 @@ class App extends Component {
     else return true
   }
 
+
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.user !== this.props.user)
       this.setState({show_user_menu: false})
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.showHeaderBgColor)
-  }
 
-
-  showHeaderBgColor = e => R.ifElse(
-    R.gt(R.__, 0),
-    () => this.setState({show_header_color: true}),
-    () => this.setState({show_header_color: false})
-  )(window.scrollY)
-
-
-  onClickCloseLoginModal = (reason) => {
+  onClickCloseLoginModal = reason => {
     this.setState({open_login_modal: false})
   }
 
@@ -109,14 +95,16 @@ class App extends Component {
     this.props.logout()
   }
 
+
   render() {
     return (
       <Router>
         <div>
           {
             Nav({
-              show_menu           : this.state.show_menu,
-              onClickHideMenu     : this.onClickHideMenu,
+              show_menu       : this.state.show_menu,
+              onClickHideMenu : this.onClickHideMenu,
+              user            : this.props.user
             })
           }
           <div 
@@ -126,7 +114,6 @@ class App extends Component {
             {
               Header({
                 show_user_menu         : this.state.show_user_menu,
-                show_header_color      : this.state.show_header_color,
                 open_login_modal       : this.state.open_login_modal,
                 onClickShowUserMenu    : this.onClickShowUserMenu,
                 onClickHideUserMenu    : this.onClickHideUserMenu,

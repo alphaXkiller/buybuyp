@@ -11,7 +11,7 @@ class ProductDetails extends Component {
   }
 
   render = () => (
-    <div className='mt-5'>
+    <div>
       <Card>
         <CardHeader 
           title={this.props.product.name}
