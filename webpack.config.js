@@ -36,16 +36,19 @@ module.exports = {
         test: /\.scss$/,
         use: extractSass.extract({
           fallback: 'style-loader',
-          use: [{loader: 'css-loader'}, {loader: 'sass-loader'}]
+          use: [
+            {loader: 'css-loader'}, 
+            {loader: 'sass-loader'}
+          ]
         })
       },
       {
         test: /\.(woff|woff2|ttf|eot)$/,
-        use: 'file-loader?outputPath=font/&publicPath=font/'
+        use: 'file-loader?name=[name].[ext]&outputPath=font/&publicPath=font/'
       },
       {
         test: /\.(jpg|png|svg|gif)$/,
-        use: 'file-loader?outputPath=img/&publicPath=img/'
+        use: 'file-loader?name=[name].[ext]&outputPath=img/&publicPath=img/'
       }
     ]
   },
