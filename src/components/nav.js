@@ -39,10 +39,17 @@ const _renderUser = user => (
 )
   
 
-const _renderCategory = (category, index) => (
+const _renderCategory = onClickFn => (category, index) => (
   <ListItem
-    key={index}
+    key={index} 
     primaryText={category.name}
+    onTouchTap={onClickFn}
+    containerElement={
+      <Link to={{
+        pathname : '/product/search',
+        search   : `?cid=${category.id}`
+      }} replace/>
+    }
   />
 )
 
@@ -75,7 +82,9 @@ const Nav = props => {
             primaryText='Category' 
             leftIcon={<CatIcon />}
             primaryTogglesNestedList={true}
-            nestedItems={ mapIndexed(_renderCategory)(props.categories) }
+            nestedItems={ mapIndexed(
+              _renderCategory(props.onClickHideMenu)
+            )(props.categories) }
           />
         </Menu>
 

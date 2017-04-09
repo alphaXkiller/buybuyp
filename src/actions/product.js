@@ -142,10 +142,10 @@ const searchSuccessfully = payload => ({
   payload 
 })
 
-const search = ({page, keyword, limit}) => (dispatch, getState) => Bluebird
+const search = query => (dispatch, getState) => Bluebird
   .resolve(dispatch(searchStart()))
 
-  .then( () => _search({page, keyword, limit}) )
+  .then( () => _search(query) )
 
   .then( product => dispatch(searchSuccessfully(product.data)) )
 

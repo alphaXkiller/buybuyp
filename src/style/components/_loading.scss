@@ -1,0 +1,5 @@
+.loading-primary {
+  background: url(#{$image_path}/loading.gif) no-repeat center center scroll;
+  height: #{$content_height};
+  width: 100%;
+}
