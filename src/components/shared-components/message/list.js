@@ -14,6 +14,13 @@ const mock_data = [
 
 class MessageList extends React.Component {
 
+  constructor() {
+    super()
+    this.state = {
+      show_message_list : false
+    }
+  }
+
   state = { show_message_list: false }
 
   onClickShowMessageList = () => { this.setState({ show_message_list: true }) }
