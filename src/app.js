@@ -1,20 +1,16 @@
-import R                    from 'ramda'
-import React, { Component } from 'react'
-import { connect }          from 'react-redux'
-import { 
-  BrowserRouter as Router } from 'react-router-dom'
+import R                               from 'ramda'
+import React, { Component }            from 'react'
+import { connect }                     from 'react-redux'
+import { BrowserRouter as Router }     from 'react-router-dom'
 
-import { 
-  RouteFunctor, 
-  RouteActor 
-} from './routes.js'
-import Nav    from './components/nav.js'
-import Header from './components/header.js'
-import Footer from './components/footer/footer.js'
+import { RouteFunctor, RouteActor }    from './routes.js'
+import Nav                             from './components/nav.js'
+import Header                          from './components/header.js'
+import Footer                          from './components/footer/footer.js'
 
-import { User }                        from './actions/index.js'
+import { Message, User }               from './actions/index.js'
 import { notEmpty, notNil, notEquals } from './lib/helpers.js'
-import { getCurrentUser } from './lib/auth.js'
+import { getCurrentUser }              from './lib/auth.js'
 
 import './style/main.scss'
 
@@ -30,6 +26,13 @@ class App extends Component {
     }
   }
 
+
+  componentDidMount() {
+    const uid = this.props.user.uid
+    if (!R.isNil(uid) && R.isNil(this.state.contacted_list)) {
+      this.props.getContacted(uid)
+    }
+  }
 
   shouldComponentUpdate(nextProps, nextState) {
     const same_state = R.equals(this.state)(nextState)
@@ -97,6 +100,10 @@ class App extends Component {
 
 
   render() {
+
+    console.log('debugA1 Props:', this.props)
+    console.log('debugA1 State:', this.state)
+
     return (
       <Router>
         <div>
@@ -144,12 +151,14 @@ class App extends Component {
 }
 
 const mapStateToProps = (state, props)=> ({
-  user: state.User
+  user    : state.User,
+  message : state.Message
 })
 
 
 const mapDispatchToProps = (dispatch, getState)=> ({
-  logout: () => User.logoutUser(dispatch, getState)
+  getContacted : user_id => Message.getChatContactsForUserId(user_id)(dispatch, getState),
+  logout       : () => User.logoutUser(dispatch, getState)
 })
 
 
