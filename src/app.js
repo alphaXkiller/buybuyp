@@ -1,19 +1,15 @@
-import R                    from 'ramda'
-import React, { Component } from 'react'
-import { connect }          from 'react-redux'
-import { 
-  BrowserRouter as Router } from 'react-router-dom'
+import R                           from 'ramda'
+import React, { Component }        from 'react'
+import { connect }                 from 'react-redux'
+import { BrowserRouter as Router } from 'react-router-dom'
 
-import { 
-  RouteFunctor, 
-  RouteActor 
-} from './routes.js'
-import Nav    from './components/nav.js'
-import Header from './components/header.js'
-import Footer from './components/footer/footer.js'
+import { RouteFunctor, RouteActor } from './routes.js'
+import Nav                          from './components/nav.js'
+import Header                       from './components/header.js'
+import Footer                       from './components/footer/footer.js'
 
-import { User, Product, ProductCategory } from './actions/index.js'
-import { notEmpty, notNil, notEquals }    from './lib/helpers.js'
+import { Message, User, Product, ProductCategory } from './actions/index.js'
+import { notEmpty, notNil, notEquals }             from './lib/helpers.js'
 
 import './style/main.scss'
 
@@ -31,8 +27,12 @@ class App extends Component {
   componentDidMount() {
     this.props.getProductCategory()
     this.props.getCurrentUser()
-  }
 
+    const uid = this.props.user.uid
+    if (!R.isNil(uid)) {
+      this.props.getChannels(uid)
+    }
+  }
 
   shouldComponentUpdate(nextProps, nextState) {
     const same_state = R.equals(this.state)(nextState)
@@ -98,6 +98,10 @@ class App extends Component {
 
 
   render() {
+
+    console.log('debugA1 Props:', this.props)
+    console.log('debugA1 State:', this.state)
+
     return (
       <Router>
         <div>
@@ -123,7 +127,8 @@ class App extends Component {
                 onClickOpenLoginModal  : this.onClickOpenLoginModal,
                 onClickCloseLoginModal : this.onClickCloseLoginModal,
                 onClickLogout          : this.onClickLogout,
-                user                   : this.props.user
+                user                   : this.props.user,
+                message                : this.props.message
               })
             }
             <main>
@@ -146,15 +151,17 @@ class App extends Component {
 }
 
 const mapStateToProps = (state, props)=> ({
+  categories : state.ProductCategory,
   user       : state.User,
-  categories : state.ProductCategory
+  message    : state.Message
 })
 
 
 const mapDispatchToProps = (dispatch, getState)=> ({
   getCurrentUser     : () => User.getUser(dispatch, getState),
   logout             : () => User.logoutUser(dispatch, getState),
-  getProductCategory : () => ProductCategory.getAll(dispatch, getState)
+  getProductCategory : () => ProductCategory.getAll(dispatch, getState),
+  getChannels        : user_uid => Message.getChatChannelsForUserUid(user_uid)(dispatch, getState)
 })
 
 

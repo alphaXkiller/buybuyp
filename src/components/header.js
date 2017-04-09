@@ -1,13 +1,17 @@
-import R        from 'ramda'
-import React    from 'react'
-import { Link } from 'react-router-dom'
-import Menu     from 'material-ui/Menu'
-import MenuItem from 'material-ui/MenuItem'
-import Dialog   from 'material-ui/Dialog'
-import Avatar   from 'material-ui/Avatar'
+import R          from 'ramda'
+import React      from 'react'
+import { Link }   from 'react-router-dom'
+import Menu       from 'material-ui/Menu'
+import MenuItem   from 'material-ui/MenuItem'
+import Dialog     from 'material-ui/Dialog'
+import Avatar     from 'material-ui/Avatar'
+import ChatBubble from 'material-ui/svg-icons/communication/chat-bubble'
 import Popover, { PopoverAnimationVertical }  from 'material-ui/Popover'
 
 import LoginForm from './shared-components/form/login.js'
+
+import MessageList from './shared-components/message/list.js'
+
 
 const _renderLoginUser = props => (
   <button className='buybuy-btn'>
@@ -56,6 +60,7 @@ const _renderAnonymousIcon = props => (
 
 
 const Header = props => {
+
   return (
     <header
       className={
@@ -71,7 +76,11 @@ const Header = props => {
       >
         <i className='fa fa-bars fa-lg'></i>
       </button>
+
       <Link to='/' style={{fontSize: '20px'}}>Buy Buy</Link>
+
+      <MessageList message = { props.message } />
+
       {
         props.user.uid ?
           _renderLoginUser({
