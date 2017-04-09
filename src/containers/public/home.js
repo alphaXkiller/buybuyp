@@ -1,4 +1,5 @@
 import R                    from 'ramda'
+import Qs                   from 'qs'
 import React, { Component } from 'react'
 import { connect }          from 'react-redux'
 import { Link }             from 'react-router-dom'
@@ -7,8 +8,12 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd           from 'material-ui/svg-icons/content/add'
 import ProductList          from '../../components/product-list.js'
 
-import { Product }    from '../../actions/index.js'
-import { mapIndexed } from '../../lib/helpers.js'
+import Debounce    from 'lodash/debounce'
+import { Product } from '../../actions/index.js'
+import { 
+  mapIndexed, 
+  notEquals,
+} from '../../lib/helpers.js'
 
 const DEFAULT_LIMIT = 2;
 
@@ -16,13 +21,27 @@ class Home extends Component {
   constructor() {
     super()
     this.state = {
-      keyword: ''
+      keyword: '',
+      loading: true
     }
   }
 
 
   componentDidMount() {
     this.props.searchProduct({ page: 1, limit: DEFAULT_LIMIT })
+  }
+
+
+  componentDidUpdate(prev_props, prev_state) {
+    const list_updated = notEquals(
+      prev_props.product_list, this.props.product_list
+    )
+    const keyword_updated = notEquals(
+      prev_state.keyword, this.state.keyword
+    )
+
+    if (list_updated || keyword_updated)
+      this.setState({loading: false})
   }
 
 
@@ -34,11 +53,23 @@ class Home extends Component {
     }) 
   }
 
+  // For autocomplete to hit the api later on.
+  // Debounce api hit for every keystroke
+  // onUpdateInput = Debounce( (text, list, params) => {
+  //   this.setState({keyword: text})
+  // }, 500 )
 
-  updateKeyword = (keyword) => {
-    this.setState({keyword}, () =>
-      this.props.searchProduct({page: 1, limit: DEFAULT_LIMIT , keyword}) 
-    )
+
+  submit = e => {
+    e.preventDefault()
+    const query = {
+      keyword: e.target.keyword.value 
+    }
+
+    if (query.keyword !== '') {
+      let path = '/product/search?' + Qs.stringify(query)
+      this.props.history.push(path)
+    }
   }
 
 
@@ -47,14 +78,20 @@ class Home extends Component {
       <div>
         <div className='landing-background' />
         <div className='container'>
-          <AutoComplete
-            fullWidth
-            floatingLabelText='Search'
-            dataSource={[]}
-            autoComplete='off'
-            onNewRequest={this.updateKeyword}
-          />
-          { ProductList(this.props.product_list) }
+          <form onSubmit={this.submit}>
+            <AutoComplete
+              name='keyword'
+              fullWidth
+              floatingLabelText='Search'
+              dataSource={[]}
+              autoComplete='off'
+            />
+          </form>
+          { 
+            this.state.loading ?
+              <div className='loading-primary' />
+            : ProductList(this.props.product_list) 
+          }
           <div className='d-flex col-sm-12 justify-content-center p-4'>
             <FloatingActionButton
               onTouchTap={this.onClickLoadMoreProducts}
