@@ -118,9 +118,9 @@ class Home extends Component {
 
 
 const mapStateToProps = state => ({
-  product_list: state.Product_search.rows,
-  product_count: state.Product_search.count,
-  page: R.path(['Product_search', 'params', 'page'])(state)
+  product_list: state.ProductSearch.rows,
+  product_count: state.ProductSearch.count,
+  page: R.path(['ProductSearch', 'params', 'page'])(state)
 })
 
 

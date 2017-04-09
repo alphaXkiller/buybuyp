@@ -1,6 +1,7 @@
-import R            from 'ramda'
-import React        from 'react'
-import { Link }     from 'react-router-dom'
+import R           from 'ramda'
+import React       from 'react'
+import { connect } from 'react-redux'
+import { Link }    from 'react-router-dom'
 
 import Menu         from 'material-ui/Menu'
 import Drawer       from 'material-ui/Drawer'
@@ -11,16 +12,19 @@ import FlatButton   from 'material-ui/FlatButton'
 import CatIcon      from 'material-ui/svg-icons/image/color-lens'
 import HomeIcon     from 'material-ui/svg-icons/action/home'
 import ShopIcon     from 'material-ui/svg-icons/action/shopping-cart'
+
+import {
+  List, 
+  ListItem
+} from 'material-ui/List'
 import { 
   Card, 
   CardHeader, 
   CardActions
 } from 'material-ui/Card'
 
-import Signup from './shared-components/form/signup.js'
-import Login  from './shared-components/form/login.js'
-
-import { nilOrEmpty, notNil } from '../lib/helpers.js'
+import { nilOrEmpty, notNil, mapIndexed } from '../lib/helpers.js'
+import { ProductCategory } from '../actions/index.js'
 
 const _renderUser = user => (
   <Card
@@ -35,11 +39,20 @@ const _renderUser = user => (
 )
   
 
+const _renderCategory = (category, index) => (
+  <ListItem
+    key={index}
+    primaryText={category.name}
+  />
+)
+
+
 const Nav = props => {
   const is_user_login = notNil(props.user.uid)
 
   return (
     <Drawer 
+      width={280}
       open={props.show_menu}
       docked={false}
       onRequestChange={props.onClickHideMenu}
@@ -58,7 +71,12 @@ const Nav = props => {
           <Link to='/' onTouchTap={props.onClickHideMenu} >
             <MenuItem primaryText='Home' leftIcon={<HomeIcon />} />
           </Link>
-          <MenuItem primaryText='Category' leftIcon={<CatIcon />} />
+          <ListItem 
+            primaryText='Category' 
+            leftIcon={<CatIcon />}
+            primaryTogglesNestedList={true}
+            nestedItems={ mapIndexed(_renderCategory)(props.categories) }
+          />
         </Menu>
 
         <Link 

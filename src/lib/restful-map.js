@@ -1,8 +1,9 @@
 export default {
 
-  'signup'         : '/authenticate/signup',
-  'product_search' : '/product',
-  'product_details': '/product/:id',
+  'signup'           : '/authenticate/signup',
+  'product_search'   : '/product',
+  'product_details'  : '/product/:id',
+  'product_category' : '/product-category',
 
   // Require user login
   'user'                 : '/api/user',

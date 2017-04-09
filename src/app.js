@@ -12,9 +12,9 @@ import Nav    from './components/nav.js'
 import Header from './components/header.js'
 import Footer from './components/footer/footer.js'
 
-import { User }                        from './actions/index.js'
-import { notEmpty, notNil, notEquals } from './lib/helpers.js'
-import { getCurrentUser } from './lib/auth.js'
+import { User, Product, ProductCategory } from './actions/index.js'
+import { notEmpty, notNil, notEquals }    from './lib/helpers.js'
+import { getCurrentUser }                 from './lib/auth.js'
 
 import './style/main.scss'
 
@@ -23,11 +23,14 @@ class App extends Component {
     super()
     this.state = {
       show_menu         : false,
-      show_login        : false,
-      show_signup       : false,
       show_user_menu    : false,
       open_login_modal  : false
     }
+  }
+
+
+  componentDidMount() {
+    this.props.getProductCategory()
   }
 
 
@@ -70,9 +73,7 @@ class App extends Component {
   onClickHideMenu = e => {
     if (this.state.show_menu)
       this.setState({
-        show_menu: false,
-        show_login: false,
-        show_signup: false
+        show_menu: false
       }, () => {
         document.getElementById('body').className = ''
       })
@@ -102,9 +103,10 @@ class App extends Component {
         <div>
           {
             Nav({
+              user            : this.props.user,
               show_menu       : this.state.show_menu,
-              onClickHideMenu : this.onClickHideMenu,
-              user            : this.props.user
+              categories      : this.props.categories,
+              onClickHideMenu : this.onClickHideMenu
             })
           }
           <div 
@@ -144,12 +146,14 @@ class App extends Component {
 }
 
 const mapStateToProps = (state, props)=> ({
-  user: state.User
+  user: state.User,
+  categories: state.ProductCategory
 })
 
 
 const mapDispatchToProps = (dispatch, getState)=> ({
-  logout: () => User.logoutUser(dispatch, getState)
+  logout             : () => User.logoutUser(dispatch, getState),
+  getProductCategory : () => ProductCategory.getAll(dispatch, getState)
 })
 
 
