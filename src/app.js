@@ -28,10 +28,6 @@ class App extends Component {
     this.props.getProductCategory()
     this.props.getCurrentUser()
 
-    const uid = this.props.user.uid
-    if (!R.isNil(uid)) {
-      this.props.getChannels(uid)
-    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -46,6 +42,11 @@ class App extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.user !== this.props.user)
       this.setState({show_user_menu: false})
+
+    const uid = this.props.user.uid
+    if (!R.isNil(uid) && R.isNil(this.props.message.chat_channels)) {
+      this.props.getChannels(uid)
+    }
   }
 
 
@@ -98,9 +99,6 @@ class App extends Component {
 
 
   render() {
-
-    console.log('debugA1 Props:', this.props)
-    console.log('debugA1 State:', this.state)
 
     return (
       <Router>

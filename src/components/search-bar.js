@@ -31,12 +31,13 @@ const _renderCategory = category => (
   <MenuItem key={category.id} value={category.id} primaryText={category.name} />
 )
 
+
 class SearchBar extends React.Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       expand_options : false,
-      cid: null
+      cid            : props.query.cid
     } 
   }
 
@@ -47,25 +48,27 @@ class SearchBar extends React.Component {
   //   this.setState({keyword: text})
   // }, 500 )
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.cid !== this.props.query.cid)
+      this.setState({cid: this.props.query.cid})
+  }
+
 
   submit = e => {
     e.preventDefault()
 
     const query = {
-      keyword: e.target.keyword.value,
-      cid: this.state.cid
+      keyword : e.target.keyword.value,
+      cid     : this.state.cid
     }
 
+    const path = R.compose(
+      R.concat('/product/search?'),
+      Qs.stringify,
+      R.filter(notNilOrEmpty)
+    )(query)
 
-    if (query.keyword !== '') {
-      let path = R.compose(
-        R.concat('/product/search?'),
-        Qs.stringify,
-        R.filter(notNilOrEmpty)
-      )(query)
-
-      this.props.history.push(path)
-    }
+    this.props.history.push(path)
   }
 
 

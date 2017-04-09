@@ -29,14 +29,7 @@ class Home extends Component {
 
 
   componentDidUpdate(prev_props, prev_state) {
-    const list_updated = notEquals(
-      prev_props.product_list, this.props.product_list
-    )
-    const keyword_updated = notEquals(
-      prev_state.keyword, this.state.keyword
-    )
-
-    if (list_updated || keyword_updated)
+    if (this.props.product_list !== [] && this.state.loading)
       this.setState({loading: false})
   }
 
