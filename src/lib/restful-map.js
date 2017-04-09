@@ -11,6 +11,5 @@ export default {
   'user_product'         : '/api/product',
   'user_product_details' : '/api/product/:id',
   'image'                : '/api/image',
-  'chat_contact_details' : '/api/chat-contact/:uid',
-  'chat_contact_all'     : '/api/chat-contact/:uid/all'
+  'chat_channel_all'     : '/api/chat-channel/:uid/all'
 }

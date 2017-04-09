@@ -2,32 +2,26 @@ import R           from 'ramda'
 import { Message } from '../actions/index.js'
 
 
-const _hydrateContact = R.curry((users, contact) => R.compose(
-  R.assoc('other_user', R.__, contact),
-  R.find(R.either(
-    R.propEq('uid', R.prop('uid_1', contact)),
-    R.propEq('uid', R.prop('uid_2', contact))
-  ))
-)(users))
+const reduceChatChannels = (state, payload) => R.compose(
+  R.assoc('chat_channels', R.__, state),
+  R.reverse,
+  R.sortBy(R.prop('last_message_timestamp')),
+  R.values(),
+  R.map(R.head),
+  R.reject(R.isEmpty),
+  R.map(R.reject(R.pathEq(['user', 'uid'], payload.uid))),
+  R.groupBy(R.prop('uid'))
+)(payload.channels)
 
-
-const _hydrateContacts = R.curry((users, contacts) =>
-  R.map(_hydrateContact(users), contacts))
-
-
-const reduceChatContacts = (state, payload) => {
-  let chat_contacts = _hydrateContacts(payload.users, payload.chat_contacts)
-  return R.merge(state, { chat_contacts })
-  
-}
 
 
 const reducer = (state = {}, action) => R.cond([
-  [
-    R.equals(Message.TYPE.get_chat_contacts_for_user_id_success),
-      () => reduceChatContacts(state, action.payload)
-  ],
+
+  [ R.equals(Message.TYPE.get_chat_channels_for_user_uid_success),
+      () => reduceChatChannels(state, action.payload) ],
+
   [ R.T, R.always(state) ]
+
 ])(action.type)
 
 
