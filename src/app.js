@@ -128,7 +128,8 @@ class App extends Component {
                 onClickOpenLoginModal  : this.onClickOpenLoginModal,
                 onClickCloseLoginModal : this.onClickCloseLoginModal,
                 onClickLogout          : this.onClickLogout,
-                user                   : this.props.user
+                user                   : this.props.user,
+                message                : this.props.message
               })
             }
             <main>

@@ -79,7 +79,8 @@ const Header = props => {
 
       <Link to='/' style={{fontSize: '20px'}}>Buy Buy</Link>
 
-      <MessageList/>
+      <MessageList message = { props.message } />
+
       {
         props.user.uid ?
           _renderLoginUser({

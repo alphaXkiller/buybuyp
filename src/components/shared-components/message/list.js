@@ -1,3 +1,4 @@
+import R                                     from 'ramda'
 import React                                 from 'react'
 import Chat                                  from './chat'
 import { List, ListItem }                    from 'material-ui/List'
@@ -7,9 +8,45 @@ import ChatBubble                            from 'material-ui/svg-icons/communi
 
 
 const mock_data = [
-  { text: 'abc', user: 'jon' },
-  { text: 'hello', user: 'frankie' }
+  { text: 'Can you make a leather wallet?', user: 'jon' },
+  { text: 'Yes, but it will take me a couple weeks', user: 'frankie' }
 ]
+
+
+
+const MessageListItem = props => {
+  return <ListItem
+    key                      = { `chat_${props.other_user.name}` }
+    primaryText              = { props.other_user.name }
+    rightIcon                = { <ChatBubble/> }
+    initiallyOpen            = { false }
+    primaryTogglesNestedList = { true }
+    nestedItems = {[
+
+      <ListItem key={`message_${props.other_user.name}`}>
+      {
+        Chat({
+          other_user_id : props.other_user.name,
+          messages      : mock_data
+        })
+      }
+      </ListItem>
+
+    ]}
+
+  />
+}
+  
+
+const _renderMessageListItem = chat_contact =>
+  MessageListItem(chat_contact)
+
+const _hasContacts = R.compose(
+  R.not,
+  R.isNil,
+  R.path(['message', 'chat_contacts'])
+)
+
 
 
 class MessageList extends React.Component {
@@ -43,33 +80,13 @@ class MessageList extends React.Component {
           <List>
 
             <Subheader>Recent Chats</Subheader>
-            
-            <ListItem
-              primaryText = "Mariah Cabrera"
-              rightIcon   = {<ChatBubble/>}
-              initiallyOpen = {false}
-              primaryTogglesNestedList = {true}
-              nestedItems = {[]}
-            />
 
-            <ListItem
-              primaryText = "Frankie Huang"
-              rightIcon   = {<ChatBubble/>}
-              initiallyOpen = {false}
-              primaryTogglesNestedList = {true}
-              nestedItems = {[
+            {
+              _hasContacts(this.props)
+                ? R.map(MessageListItem, this.props.message.chat_contacts) 
+                : null
+            }
 
-                <ListItem key={1}>
-                {
-                  Chat({
-                    other_user_id : "frankie",
-                    messages      : mock_data
-                  })
-                }
-                </ListItem>
-
-              ]}
-            />
 
           </List>
 
