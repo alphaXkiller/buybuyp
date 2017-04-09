@@ -29,8 +29,8 @@ class App extends Component {
 
   componentDidMount() {
     const uid = this.props.user.uid
-    if (!R.isNil(uid) && R.isNil(this.state.contacted_list)) {
-      this.props.getContacted(uid)
+    if (!R.isNil(uid)) {
+      this.props.getChannels(uid)
     }
   }
 
@@ -158,8 +158,8 @@ const mapStateToProps = (state, props)=> ({
 
 
 const mapDispatchToProps = (dispatch, getState)=> ({
-  getContacted : user_id => Message.getChatContactsForUserId(user_id)(dispatch, getState),
-  logout       : () => User.logoutUser(dispatch, getState)
+  getChannels : user_uid => Message.getChatChannelsForUserUid(user_uid)(dispatch, getState),
+  logout      : () => User.logoutUser(dispatch, getState)
 })
 
 

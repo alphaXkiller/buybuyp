@@ -16,17 +16,17 @@ const mock_data = [
 
 const MessageListItem = props => {
   return <ListItem
-    key                      = { `chat_${props.other_user.name}` }
-    primaryText              = { props.other_user.name }
+    key                      = { `chat_${props.user.name}` }
+    primaryText              = { props.user.name }
     rightIcon                = { <ChatBubble/> }
     initiallyOpen            = { false }
     primaryTogglesNestedList = { true }
     nestedItems = {[
 
-      <ListItem key={`message_${props.other_user.name}`}>
+      <ListItem key={`message_${props.user.name}`}>
       {
         Chat({
-          other_user_id : props.other_user.name,
+          other_user_id : props.user.name,
           messages      : mock_data
         })
       }
@@ -36,15 +36,12 @@ const MessageListItem = props => {
 
   />
 }
-  
 
-const _renderMessageListItem = chat_contact =>
-  MessageListItem(chat_contact)
 
-const _hasContacts = R.compose(
+const _hasChannels = R.compose(
   R.not,
   R.isNil,
-  R.path(['message', 'chat_contacts'])
+  R.path(['message', 'chat_channels'])
 )
 
 
@@ -82,8 +79,8 @@ class MessageList extends React.Component {
             <Subheader>Recent Chats</Subheader>
 
             {
-              _hasContacts(this.props)
-                ? R.map(MessageListItem, this.props.message.chat_contacts) 
+              _hasChannels(this.props)
+                ? R.map(MessageListItem, this.props.message.chat_channels) 
                 : null
             }
 
