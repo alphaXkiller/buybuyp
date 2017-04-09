@@ -1,5 +1,4 @@
 import R                    from 'ramda'
-import Qs                   from 'qs'
 import React, { Component } from 'react'
 import { connect }          from 'react-redux'
 import { Link }             from 'react-router-dom'
@@ -7,13 +6,10 @@ import AutoComplete         from 'material-ui/Autocomplete'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd           from 'material-ui/svg-icons/content/add'
 import ProductList          from '../../components/product-list.js'
+import SearchBar            from '../../components/search-bar.js'
 
-import Debounce    from 'lodash/debounce'
-import { Product } from '../../actions/index.js'
-import { 
-  mapIndexed, 
-  notEquals,
-} from '../../lib/helpers.js'
+import { Product }  from '../../actions/index.js'
+import { notEquals} from '../../lib/helpers.js'
 
 const DEFAULT_LIMIT = 2;
 
@@ -53,40 +49,16 @@ class Home extends Component {
     }) 
   }
 
-  // For autocomplete to hit the api later on.
-  // Debounce api hit for every keystroke
-  // onUpdateInput = Debounce( (text, list, params) => {
-  //   this.setState({keyword: text})
-  // }, 500 )
-
-
-  submit = e => {
-    e.preventDefault()
-    const query = {
-      keyword: e.target.keyword.value 
-    }
-
-    if (query.keyword !== '') {
-      let path = '/product/search?' + Qs.stringify(query)
-      this.props.history.push(path)
-    }
-  }
-
 
   render() {
     return (
       <div>
         <div className='landing-background' />
         <div className='container'>
-          <form onSubmit={this.submit}>
-            <AutoComplete
-              name='keyword'
-              fullWidth
-              floatingLabelText='Search'
-              dataSource={[]}
-              autoComplete='off'
-            />
-          </form>
+          <SearchBar {...this.props}
+            show_options 
+            category={this.props.category}
+          />
           { 
             this.state.loading ?
               <div className='loading-primary' />
@@ -107,9 +79,10 @@ class Home extends Component {
 
 
 const mapStateToProps = state => ({
-  product_list: state.ProductSearch.rows,
-  product_count: state.ProductSearch.count,
-  page: R.path(['ProductSearch', 'params', 'page'])(state)
+  product_list  : state.ProductSearch.rows,
+  product_count : state.ProductSearch.count,
+  category      : state.ProductCategory,
+  page          : R.path(['ProductSearch', 'params', 'page'])(state)
 })
 
 

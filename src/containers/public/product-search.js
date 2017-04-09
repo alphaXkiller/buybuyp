@@ -3,6 +3,7 @@ import React       from 'react'
 import { connect } from 'react-redux'
 
 import ProductList from '../../components/product-list.js'
+import SearchBar   from '../../components/search-bar.js'
 
 import { Product } from '../../actions/index.js'
 import { notEquals } from '../../lib/helpers.js'
@@ -38,6 +39,7 @@ class ProductSearch extends React.Component {
   render() {
     return(
       <div className='container'>
+        <SearchBar {...this.props}/>
         { 
           this.state.loading ? 
             <div className='loading-primary'/> 
