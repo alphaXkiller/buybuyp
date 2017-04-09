@@ -25,23 +25,12 @@ const store = createStore(
   composeEnhancers(applyMiddleware(Thunk))
 )
 
-// TODO: There should be a way to apply Pormise to the middleware to create
-// a initial state
-getCurrentUser()
-  .then( User => {
-    const store = createStore(
-      Reducers,
-      { User: R.when(R.isNil, R.always({}))(User) },
-      composeEnhancers(applyMiddleware(Thunk))
-    )
-
-    ReactDom.render(
-      <Provider store={store}>
-        <MuiThemeProvider>
-          <App />
-        </MuiThemeProvider>
-      </Provider>,
-      document.getElementById('buybuy')
-    )
-  })
+ReactDom.render(
+  <Provider store={store}>
+    <MuiThemeProvider>
+      <App />
+    </MuiThemeProvider>
+  </Provider>,
+  document.getElementById('buybuy')
+)
 

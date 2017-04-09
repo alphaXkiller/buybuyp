@@ -14,7 +14,6 @@ import Footer from './components/footer/footer.js'
 
 import { User, Product, ProductCategory } from './actions/index.js'
 import { notEmpty, notNil, notEquals }    from './lib/helpers.js'
-import { getCurrentUser }                 from './lib/auth.js'
 
 import './style/main.scss'
 
@@ -31,6 +30,7 @@ class App extends Component {
 
   componentDidMount() {
     this.props.getProductCategory()
+    this.props.getCurrentUser()
   }
 
 
@@ -146,12 +146,13 @@ class App extends Component {
 }
 
 const mapStateToProps = (state, props)=> ({
-  user: state.User,
-  categories: state.ProductCategory
+  user       : state.User,
+  categories : state.ProductCategory
 })
 
 
 const mapDispatchToProps = (dispatch, getState)=> ({
+  getCurrentUser     : () => User.getUser(dispatch, getState),
   logout             : () => User.logoutUser(dispatch, getState),
   getProductCategory : () => ProductCategory.getAll(dispatch, getState)
 })
