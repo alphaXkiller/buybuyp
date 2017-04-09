@@ -8,7 +8,6 @@ import Login           from './containers/public/login.js'
 import DMain           from './containers/dashboard/main.js'
 import DSell           from './containers/dashboard/sell.js'
 import DProductDetails from './containers/dashboard/product-details.js'
-import Chat            from './containers/dashboard/chat'
 
 const RouteFunctor = [
   { path: '/', component: Home, exact: true},
@@ -16,8 +15,7 @@ const RouteFunctor = [
   { path: '/product/:id', component: ProductDetails },
   { path: '/dashboard', component: DMain, exact: true}, 
   { path: '/dashboard/sell', component: DSell },
-  { path: '/dashboard/product/:id', component: DProductDetails },
-  { path: '/chat', component: Chat }
+  { path: '/dashboard/product/:id', component: DProductDetails }
 ]
 
 
