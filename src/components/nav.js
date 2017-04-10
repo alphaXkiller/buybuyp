@@ -46,7 +46,7 @@ const _renderCategory = onClickFn => (category, index) => (
     onTouchTap={onClickFn}
     containerElement={
       <Link to={{
-        pathname : '/product/search',
+        pathname : '/',
         search   : `?cid=${category.id}`
       }} replace/>
     }

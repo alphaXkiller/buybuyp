@@ -8,8 +8,8 @@ import ContentAdd           from 'material-ui/svg-icons/content/add'
 import ProductList          from '../../components/product-list.js'
 import SearchBar            from '../../components/search-bar.js'
 
-import { Product }  from '../../actions/index.js'
-import { notEquals} from '../../lib/helpers.js'
+import { Product }                  from '../../actions/index.js'
+import { notEquals, notNilOrEmpty } from '../../lib/helpers.js'
 
 const DEFAULT_LIMIT = 2;
 
@@ -24,13 +24,20 @@ class Home extends Component {
 
 
   componentDidMount() {
-    this.props.searchProduct({ page: 1, limit: DEFAULT_LIMIT })
+    this.props.searchProduct(R.merge(
+      { page: 1, limit: DEFAULT_LIMIT }, this.props.query
+    ))
   }
 
 
   componentDidUpdate(prev_props, prev_state) {
     if (this.props.product_list !== [] && this.state.loading)
       this.setState({loading: false})
+
+    if (!R.equals(this.props.query, prev_props.query))
+      this.setState({loading: true}, () => 
+        this.props.searchProduct(this.props.query)
+      )
   }
 
 
@@ -46,7 +53,11 @@ class Home extends Component {
   render() {
     return (
       <div>
-        <div className='landing-background' />
+        { 
+          this.props.is_categorized ?
+            <h1>{this.props.query.cid}</h1>
+          : <div className='landing-background' />
+        }
         <div className='container'>
           <SearchBar {...this.props}
             show_options 
@@ -71,7 +82,8 @@ class Home extends Component {
 }
 
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, props) => ({
+  is_categorized: notNilOrEmpty(props.query.cid),
   product_list  : state.ProductSearch.rows,
   product_count : state.ProductSearch.count,
   category      : state.ProductCategory,
@@ -80,8 +92,8 @@ const mapStateToProps = state => ({
 
 
 const mapDispatchToProps = dispatch => ({
-  searchProduct: query => dispatch(Product.search(query)),
-  searchProductMore: query => dispatch(Product.searchMore(query))
+  searchProduct     : query => dispatch(Product.search(query)),
+  searchProductMore : query => dispatch(Product.searchMore(query))
 })
 
 

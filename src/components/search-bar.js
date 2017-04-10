@@ -49,8 +49,8 @@ class SearchBar extends React.Component {
   // }, 500 )
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.cid !== this.props.query.cid)
-      this.setState({cid: this.props.query.cid})
+    // if (prevState.cid !== this.props.query.cid)
+    //   this.setState({cid: this.props.query.cid})
   }
 
 
@@ -63,7 +63,7 @@ class SearchBar extends React.Component {
     }
 
     const path = R.compose(
-      R.concat('/product/search?'),
+      R.concat('/?'),
       Qs.stringify,
       R.filter(notNilOrEmpty)
     )(query)

@@ -27,8 +27,8 @@ class App extends Component {
   componentDidMount() {
     this.props.getProductCategory()
     this.props.getCurrentUser()
-
   }
+
 
   shouldComponentUpdate(nextProps, nextState) {
     const same_state = R.equals(this.state)(nextState)
