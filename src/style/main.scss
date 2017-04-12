@@ -1,7 +1,8 @@
 @import './helpers/_variable.scss';
+
 @import "~font-awesome/scss/font-awesome";
 @import '~bootstrap/scss/bootstrap.scss';
-//@import '~mdbootstrap/sass/mdb.scss';
+@import 'library/animate.min.css';
 
 @import 'overwrite.scss';
 

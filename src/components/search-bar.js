@@ -9,6 +9,7 @@ import MenuItem     from 'material-ui/MenuItem'
 import Debounce    from 'lodash/debounce'
 import { notNilOrEmpty } from '../lib/helpers.js'
 
+const ALL_CAT = '0'
 
 const _renderOptionBtn = ({toggleOptions, expand_options}) => (
   <button 
@@ -37,7 +38,7 @@ class SearchBar extends React.Component {
     super(props)
     this.state = {
       expand_options : false,
-      cid            : props.query.cid
+      cid            : props.query.cid || ALL_CAT
     } 
   }
 
@@ -65,7 +66,8 @@ class SearchBar extends React.Component {
     const path = R.compose(
       R.concat('/?'),
       Qs.stringify,
-      R.filter(notNilOrEmpty)
+      R.filter(notNilOrEmpty),
+      R.when(R.propEq('cid', ALL_CAT), R.dissoc('cid'))
     )(query)
 
     this.props.history.push(path)
@@ -107,8 +109,9 @@ class SearchBar extends React.Component {
                   floatingLabelText='Category'
                   value={this.state.cid}
                   onChange={this.onSelectCategory}
+                  autoWidth
                 >
-                  <MenuItem value={null} primaryText='' />
+                  <MenuItem value={ALL_CAT} primaryText='all' />
                   {
                     this.props.category ?
                       R.map(_renderCategory)(this.props.category)

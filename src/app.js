@@ -1,7 +1,10 @@
 import R                           from 'ramda'
 import React, { Component }        from 'react'
 import { connect }                 from 'react-redux'
-import { BrowserRouter as Router } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Switch
+} from 'react-router-dom'
 
 import { RouteFunctor, RouteActor } from './routes.js'
 import Nav                          from './components/nav.js'
@@ -130,15 +133,17 @@ class App extends Component {
               })
             }
             <main>
-              {
-                RouteFunctor.map( (route, i) => (
-                  <RouteActor 
-                    key={i} 
-                    user={this.props.user} 
-                    {...route} 
-                  />
-                ))
-              }
+              <Switch>
+                {
+                  RouteFunctor.map( (route, i) => (
+                    <RouteActor 
+                      key={i} 
+                      user={this.props.user} 
+                      {...route} 
+                    />
+                  ))
+                }
+              </Switch>
             </main>
             { Footer() }
           </div>
