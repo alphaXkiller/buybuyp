@@ -60,12 +60,13 @@ const solution = (instance, url, body) => ({
  **/
 const apiRequest = ({method, path, keys, query, body}) => {
 
-  let _url = Path_map[path]
+  const _query = R.when(notNilOrEmpty, R.filter(notNilOrEmpty))(query)
+  let _url     = Path_map[path]
 
   if (R.isNil(_url)) throw new Error('WRONG PATH')
 
   if (keys) _url = parseKeys(_url)(keys)
-  if (query) _url = parseQuery(_url)(query)
+  if (_query) _url = parseQuery(_url)(_query)
 
   // TODO: SUPPOSE TO USE ASYNC/AWAIT, BUT BROWSER SUPPORT IS SO POOR
   if (R.test(/^\/api\//)(_url)) {

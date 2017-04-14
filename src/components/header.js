@@ -14,7 +14,7 @@ import MessageList from './shared-components/message/list.js'
 
 
 const _renderLoginUser = props => (
-  <button className='buybuy-btn'>
+  <button className='btn frameless'>
     <Avatar 
       id='user-avatar' 
       src={props.user.profile_image}
@@ -43,7 +43,7 @@ const _renderAnonymousIcon = props => (
   <div>
     <button 
       id='header-user'
-      className='buybuy-btn' 
+      className='btn frameless' 
       onTouchTap={props.onClickOpenLoginModal}
     >
       <i className='fa fa-user-o fa-lg' />
@@ -71,7 +71,7 @@ const Header = props => {
       }
     >
       <button
-        className='buybuy-btn'
+        className='btn frameless'
         onTouchTap={props.onClickShowMenu}
       >
         <i className='fa fa-bars fa-lg'></i>

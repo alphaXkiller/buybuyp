@@ -63,7 +63,7 @@ class MessageList extends React.Component {
   render() {
     return (
 
-      <button className='buybuy-btn' onTouchTap={this.onClickShowMessageList}>
+      <button className='btn frameless' onTouchTap={this.onClickShowMessageList}>
 
         <i id='chat-bubble'>{<ChatBubble />}</i>
 

@@ -36,7 +36,7 @@ class Home extends Component {
 
     if (!R.equals(this.props.query, prev_props.query))
       this.setState({loading: true}, () => 
-        this.props.searchProduct(this.props.query)
+        this.props.searchProduct(R.merge(this.props.query, {limit: DEFAULT_LIMIT}))
       )
   }
 
@@ -59,10 +59,7 @@ class Home extends Component {
           : <div className='landing-background' />
         }
         <div className='container'>
-          <SearchBar {...this.props}
-            show_options 
-            category={this.props.category}
-          />
+          <SearchBar {...this.props} />
           { 
             this.state.loading ?
               <div className='loading-primary' />

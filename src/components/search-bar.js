@@ -1,13 +1,16 @@
 import R            from 'ramda'
 import Qs           from 'qs'
 import React        from 'react'
+import { connect }  from 'react-redux'
 import AutoComplete from 'material-ui/Autocomplete'
 import MoreIcon     from 'material-ui/svg-icons/navigation/expand-less'
 import SelectField  from 'material-ui/SelectField'
 import MenuItem     from 'material-ui/MenuItem'
+import TextField    from 'material-ui/TextField'
+import Debounce     from 'lodash/debounce'
 
-import Debounce    from 'lodash/debounce'
 import { notNilOrEmpty } from '../lib/helpers.js'
+import { OptionSortBy } from '../constant/search-bar-option.js'
 
 const ALL_CAT = '0'
 
@@ -16,7 +19,7 @@ const _renderOptionBtn = ({toggleOptions, expand_options}) => (
    type='button'
     onTouchTap={toggleOptions}
     style={{paddingTop: '37px'}}
-    className='buybuy-btn'
+    className='btn frameless'
   >
     {
       expand_options ?
@@ -33,12 +36,19 @@ const _renderCategory = category => (
 )
 
 
+const _renderSortBy = key => (
+  <MenuItem key={key} value={OptionSortBy[key]} primaryText={key} />
+)
+
 class SearchBar extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       expand_options : false,
-      cid            : props.query.cid || ALL_CAT
+      cid            : props.query.cid || ALL_CAT,
+      price_min      : props.query.price_min, 
+      price_max      : props.query.price_max,
+      sort_by        : props.query.sort_by || 'posted'
     } 
   }
 
@@ -50,8 +60,6 @@ class SearchBar extends React.Component {
   // }, 500 )
 
   componentDidUpdate(prevProps, prevState) {
-    // if (prevState.cid !== this.props.query.cid)
-    //   this.setState({cid: this.props.query.cid})
   }
 
 
@@ -59,8 +67,11 @@ class SearchBar extends React.Component {
     e.preventDefault()
 
     const query = {
-      keyword : e.target.keyword.value,
-      cid     : this.state.cid
+      keyword   : e.target.keyword.value,
+      cid       : this.state.cid,
+      price_min : this.state.price_min,
+      price_max : this.state.price_max,
+      sort_by   : this.state.sort_by
     }
 
     const path = R.compose(
@@ -82,19 +93,72 @@ class SearchBar extends React.Component {
   onSelectCategory = (e, index, value) => this.setState({cid: value})
 
 
-  render() {
-    return (
-      <form onSubmit={this.submit}>
-        <div className='d-flex align-items-start'>
+  onChangePrice = name => (e, text) => this.setState({[name]: text})
+
+
+  onSelectSortOption = (e, key, value) => this.setState({sort_by: value}) 
+
+
+  _renderOptions = () => (
+    <div className='row'>
+      <div className='col-md-3'>
+        <SelectField
+          fullWidth={true}
+          name='category'
+          floatingLabelText='Category'
+          value={this.state.cid}
+          onChange={this.onSelectCategory}
+        >
+          <MenuItem value={ALL_CAT} primaryText='all' />
           {
-            this.props.show_options ? 
-              _renderOptionBtn({
-                toggleOptions  : this.toggleOptions,
-                expand_options : this.state.expand_options
-              })
+            this.props.category ?
+              R.map(_renderCategory)(this.props.category)
             : null
           }
-          <div className='d-flex flex-column w-100'>
+        </SelectField>
+      </div>
+      <div className='col-md-3'>
+        <SelectField
+          fullWidth={true}
+          name='sort_by'
+          floatingLabelText='sort_by'
+          value={this.state.sort_by}
+          onChange={this.onSelectSortOption}
+        >
+          { R.map(_renderSortBy)(R.keys(OptionSortBy)) }
+        </SelectField>
+      </div>
+      <div className='col-md-3'>
+        <TextField 
+          value={this.state.price_min}
+          fullWidth={true}
+          floatingLabelText='Min Price' 
+          onChange={this.onChangePrice('price_min')}
+        />
+      </div>
+      <div className='col-md-3'>
+        <TextField 
+          value={this.state.price_max}
+          fullWidth={true}
+          floatingLabelText='Max Price' 
+          onChange={this.onChangePrice('price_max')}
+        />
+      </div>
+    </div>
+  )
+
+
+  render() {
+    return (
+      <form className='row' onSubmit={this.submit}>
+        <div className='d-flex align-items-start w-100'>
+          {
+            _renderOptionBtn({
+              toggleOptions  : this.toggleOptions,
+              expand_options : this.state.expand_options
+            })
+          }
+          <div className='w-100'>
             <AutoComplete
               name='keyword'
               fullWidth
@@ -102,29 +166,24 @@ class SearchBar extends React.Component {
               dataSource={[]}
               autoComplete='off'
             />
-            {
-              this.state.expand_options ?
-                <SelectField
-                  name='category'
-                  floatingLabelText='Category'
-                  value={this.state.cid}
-                  onChange={this.onSelectCategory}
-                  autoWidth
-                >
-                  <MenuItem value={ALL_CAT} primaryText='all' />
-                  {
-                    this.props.category ?
-                      R.map(_renderCategory)(this.props.category)
-                    : null
-                  }
-                </SelectField>
-              : null
-            }
+            { this.state.expand_options ? this._renderOptions() : null }
           </div>
+          <button 
+            style={{paddingTop: '25px'}}
+            className='btn frameless'
+          >
+            <i className='fa fa-search fa-2x' />
+          </button>
         </div>
       </form>
     )
   }
 }
 
-export default SearchBar
+
+const mapStateToProps = (state, props) => ({
+  category: state.ProductCategory
+})
+
+
+export default connect(mapStateToProps)(SearchBar)
