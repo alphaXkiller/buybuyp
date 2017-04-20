@@ -8,6 +8,11 @@ import { mapIndexed } from '../lib/helpers.js'
 
 const COLUMNS = 3
 
+const _getFeatureImage = id => R.compose(
+  R.path(['path']),
+  R.find(R.propEq('id', id))
+)
+
 const _renderProduct = product => (
   <div
     key={product.id}
@@ -17,7 +22,8 @@ const _renderProduct = product => (
       <Link to={`/product/details/${product.id}`}>
         <div 
           style={{
-            background: `url(${product.images[0].path}) no-repeat center center`,
+            background: `url(${_getFeatureImage(product.feature_image_id)(
+              product.images)}) no-repeat center center`,
             backgroundSize: 'cover',
             height: '200px'
           }}

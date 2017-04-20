@@ -7,11 +7,11 @@ import FloatingActionButton from 'material-ui/FloatingActionButton'
 import ContentAdd           from 'material-ui/svg-icons/content/add'
 import ProductList          from '../../components/product-list.js'
 import SearchBar            from '../../components/search-bar.js'
+import CatImg               from '../../../img/cat-img.jpg'
 
 import { Product }                  from '../../actions/index.js'
 import { notEquals, notNilOrEmpty } from '../../lib/helpers.js'
 
-const DEFAULT_LIMIT = 2;
 
 class Home extends Component {
   constructor() {
@@ -24,9 +24,7 @@ class Home extends Component {
 
 
   componentDidMount() {
-    this.props.searchProduct(R.merge(
-      { page: 1, limit: DEFAULT_LIMIT }, this.props.query
-    ))
+    this.props.searchProduct(this.props.query)
   }
 
 
@@ -34,19 +32,21 @@ class Home extends Component {
     if (this.props.product_list !== [] && this.state.loading)
       this.setState({loading: false})
 
-    if (!R.equals(this.props.query, prev_props.query))
+    if (this.props.query !== prev_props.query)
       this.setState({loading: true}, () => 
-        this.props.searchProduct(R.merge(this.props.query, {limit: DEFAULT_LIMIT}))
+        this.props.searchProduct(this.props.query)
       )
   }
 
 
   onClickLoadMoreProducts = e => {
-    this.props.searchProductMore({
-      page    : R.inc(this.props.page),
-      limit   : DEFAULT_LIMIT,
-      keyword : this.state.keyword
-    }) 
+    const query = R.compose(
+      R.merge(this.props.query),
+      R.objOf('page'),
+      R.inc
+    )(this.props.page)
+
+    this.props.searchProductMore(query) 
   }
 
 
@@ -54,12 +54,15 @@ class Home extends Component {
     return (
       <div>
         { 
-          this.props.is_categorized ?
-            <h1>{this.props.query.cid}</h1>
+          this.props.query.cid ?
+            <div>
+              <img src={'/assets/' + CatImg} style={{width: '100%'}}/>
+              <h1>{this.props.category_name}</h1>
+            </div>
           : <div className='landing-background' />
         }
         <div className='container'>
-          <SearchBar {...this.props} />
+          <SearchBar {...this.props} search={this.props.searchProduct}/>
           { 
             this.state.loading ?
               <div className='loading-primary' />
@@ -80,10 +83,15 @@ class Home extends Component {
 
 
 const mapStateToProps = (state, props) => ({
-  is_categorized: notNilOrEmpty(props.query.cid),
   product_list  : state.ProductSearch.rows,
   product_count : state.ProductSearch.count,
   category      : state.ProductCategory,
+  category_name : R.compose(
+    R.path(['name']),
+    R.find(
+      R.propEq('id', parseInt(props.query.cid, 10))
+    )
+  )(state.ProductCategory),
   page          : R.path(['ProductSearch', 'params', 'page'])(state)
 })
 

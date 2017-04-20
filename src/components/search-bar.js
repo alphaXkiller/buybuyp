@@ -10,7 +10,8 @@ import TextField    from 'material-ui/TextField'
 import Debounce     from 'lodash/debounce'
 
 import { notNilOrEmpty } from '../lib/helpers.js'
-import { OptionSortBy } from '../constant/search-bar-option.js'
+import { OptionSortBy }  from '../constant/search-bar-option.js'
+import { stringifyUrl }  from '../lib/router-util.js'
 
 const ALL_CAT = '0'
 
@@ -43,9 +44,10 @@ const _renderSortBy = key => (
 class SearchBar extends React.Component {
   constructor(props) {
     super(props)
+
     this.state = {
       expand_options : false,
-      cid            : props.query.cid || ALL_CAT,
+      cid            : parseInt(props.query.cid) || ALL_CAT,
       price_min      : props.query.price_min, 
       price_max      : props.query.price_max,
       sort_by        : props.query.sort_by || 'posted'
@@ -60,28 +62,33 @@ class SearchBar extends React.Component {
   // }, 500 )
 
   componentDidUpdate(prevProps, prevState) {
+    console.log('here')
   }
 
 
   submit = e => {
     e.preventDefault()
 
-    const query = {
+    const _pre_query = {
       keyword   : e.target.keyword.value,
-      cid       : this.state.cid,
+      cid       : this.state.cid ? this.state.cid : ALL_CAT,
       price_min : this.state.price_min,
       price_max : this.state.price_max,
       sort_by   : this.state.sort_by
     }
 
-    const path = R.compose(
-      R.concat('/?'),
-      Qs.stringify,
+    const query = R.compose(
       R.filter(notNilOrEmpty),
       R.when(R.propEq('cid', ALL_CAT), R.dissoc('cid'))
+    )(_pre_query)
+
+    const path = R.compose(
+      R.concat('/?'),
+      Qs.stringify
     )(query)
 
     this.props.history.push(path)
+    this.props.search(query)
   }
 
 
@@ -90,7 +97,9 @@ class SearchBar extends React.Component {
   }
 
 
-  onSelectCategory = (e, index, value) => this.setState({cid: value})
+  onSelectCategory = (e, index, value) => this.props.history.push(
+    stringifyUrl('/', R.merge(this.props.query, { cid: value }))
+  )
 
 
   onChangePrice = name => (e, text) => this.setState({[name]: text})
@@ -168,18 +177,18 @@ class SearchBar extends React.Component {
             />
             { this.state.expand_options ? this._renderOptions() : null }
           </div>
-          <button 
-            style={{paddingTop: '25px'}}
-            className='btn frameless'
-          >
-            <i className='fa fa-search fa-2x' />
-          </button>
         </div>
       </form>
     )
   }
 }
 
+          // <button 
+          //   style={{paddingTop: '25px'}}
+          //   className='btn frameless'
+          // >
+          //   <i className='fa fa-search fa-2x' />
+          // </button>
 
 const mapStateToProps = (state, props) => ({
   category: state.ProductCategory
