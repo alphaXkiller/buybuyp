@@ -29,10 +29,10 @@ class Home extends Component {
 
 
   componentDidUpdate(prev_props, prev_state) {
-    if (this.props.product_list !== [] && this.state.loading)
+    if (this.props.products !== [] && this.state.loading)
       this.setState({loading: false})
 
-    if (this.props.query !== prev_props.query)
+    if (!R.equals(this.props.query, prev_props.query))
       this.setState({loading: true}, () => 
         this.props.searchProduct(this.props.query)
       )
@@ -66,7 +66,7 @@ class Home extends Component {
           { 
             this.state.loading ?
               <div className='loading-primary' />
-            : ProductList(this.props.product_list) 
+            : <ProductList products={this.props.products}/>
           }
           <div className='d-flex col-sm-12 justify-content-center p-4'>
             <FloatingActionButton
@@ -83,7 +83,7 @@ class Home extends Component {
 
 
 const mapStateToProps = (state, props) => ({
-  product_list  : state.ProductSearch.rows,
+  products  : state.ProductSearch.rows,
   product_count : state.ProductSearch.count,
   category      : state.ProductCategory,
   category_name : R.compose(
@@ -103,7 +103,7 @@ const mapDispatchToProps = dispatch => ({
 
 
 Home.defaultProps = {
-  product_list: [],
+  products: [],
   product_count: 0
 }
 

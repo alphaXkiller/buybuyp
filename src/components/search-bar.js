@@ -61,11 +61,6 @@ class SearchBar extends React.Component {
   //   this.setState({keyword: text})
   // }, 500 )
 
-  componentDidUpdate(prevProps, prevState) {
-    console.log('here')
-  }
-
-
   submit = e => {
     e.preventDefault()
 

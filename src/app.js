@@ -6,13 +6,15 @@ import {
   Switch
 } from 'react-router-dom'
 
-import { RouteFunctor, RouteActor } from './routes.js'
-import Nav                          from './components/nav.js'
-import Header                       from './components/header.js'
-import Footer                       from './components/footer/footer.js'
 
-import { Message, User, Product, ProductCategory } from './actions/index.js'
+import Nav    from './components/nav.js'
+import Header from './components/header.js'
+import Footer from './components/footer/footer.js'
+import Chat   from './components/shared-components/message/chat-btn.js'
+
+import { Contact, User, Product, ProductCategory } from './actions/index.js'
 import { notEmpty, notNil, notEquals }             from './lib/helpers.js'
+import { RouteFunctor, RouteActor }                from './routes.js'
 
 import './style/main.scss'
 
@@ -46,9 +48,10 @@ class App extends Component {
     if (prevProps.user !== this.props.user)
       this.setState({show_user_menu: false})
 
+    // Get Chat for login user
     const uid = this.props.user.uid
     if (!R.isNil(uid) && R.isNil(this.props.message.chat_channels)) {
-      this.props.getChannels(uid)
+      this.props.getChats()
     }
   }
 
@@ -144,6 +147,7 @@ class App extends Component {
                   ))
                 }
               </Switch>
+              { this.props.user.uid ? <Chat /> : null }
             </main>
             { Footer() }
           </div>
@@ -164,7 +168,7 @@ const mapDispatchToProps = (dispatch, getState)=> ({
   getCurrentUser     : () => User.getUser(dispatch, getState),
   logout             : () => User.logoutUser(dispatch, getState),
   getProductCategory : () => ProductCategory.getAll(dispatch, getState),
-  getChannels        : user_uid => Message.getChatChannelsForUserUid(user_uid)(dispatch, getState)
+  getChats           : () => Contact.getChats(dispatch, getState)
 })
 
 

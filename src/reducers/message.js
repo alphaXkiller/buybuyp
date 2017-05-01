@@ -17,8 +17,8 @@ const reduceChatChannels = (state, payload) => R.compose(
 
 const reducer = (state = {}, action) => R.cond([
 
-  [ R.equals(Message.TYPE.get_chat_channels_for_user_uid_success),
-      () => reduceChatChannels(state, action.payload) ],
+  // [ R.equals(Message.TYPE.get_chat_channels_for_user_uid_success),
+  //     () => reduceChatChannels(state, action.payload) ],
 
   [ R.T, R.always(state) ]
 
