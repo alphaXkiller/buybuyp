@@ -10,9 +10,6 @@ import Popover, { PopoverAnimationVertical }  from 'material-ui/Popover'
 
 import LoginForm from './shared-components/form/login.js'
 
-import MessageList from './shared-components/message/list.js'
-
-
 const _renderLoginUser = props => (
   <button className='btn frameless'>
     <Avatar 
@@ -78,11 +75,6 @@ const Header = props => {
       </button>
 
       <Link to='/' style={{fontSize: '20px'}}>Buy Buy</Link>
-
-      {
-        // <MessageList message = { props.message } />
-      }
-
       {
         props.user.uid ?
           _renderLoginUser({

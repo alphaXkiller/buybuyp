@@ -162,7 +162,7 @@ class SearchBar extends React.Component {
               expand_options : this.state.expand_options
             })
           }
-          <div className='w-100'>
+          <div className='w-100' style={{paddingRight: '16px'}}>
             <AutoComplete
               name='keyword'
               fullWidth

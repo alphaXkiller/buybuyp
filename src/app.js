@@ -10,11 +10,17 @@ import {
 import Nav    from './components/nav.js'
 import Header from './components/header.js'
 import Footer from './components/footer/footer.js'
-import Chat   from './components/shared-components/message/chat-btn.js'
+import Chat   from './components/chat/chat-btn.js'
 
-import { Contact, User, Product, ProductCategory } from './actions/index.js'
-import { notEmpty, notNil, notEquals }             from './lib/helpers.js'
-import { RouteFunctor, RouteActor }                from './routes.js'
+import { notEmpty, notNil, notEquals } from './lib/helpers.js'
+import { RouteFunctor, RouteActor }    from './routes.js'
+import { 
+  Messages, 
+  Contact, 
+  User, 
+  Product, 
+  ProductCategory 
+} from './actions/index.js'
 
 import './style/main.scss'
 
@@ -49,10 +55,8 @@ class App extends Component {
       this.setState({show_user_menu: false})
 
     // Get Chat for login user
-    const uid = this.props.user.uid
-    if (!R.isNil(uid) && R.isNil(this.props.message.chat_channels)) {
+    if (this.props.user.uid)
       this.props.getChats()
-    }
   }
 
 
@@ -132,7 +136,6 @@ class App extends Component {
                 onClickCloseLoginModal : this.onClickCloseLoginModal,
                 onClickLogout          : this.onClickLogout,
                 user                   : this.props.user,
-                message                : this.props.message
               })
             }
             <main>
@@ -160,7 +163,7 @@ class App extends Component {
 const mapStateToProps = (state, props)=> ({
   categories : state.ProductCategory,
   user       : state.User,
-  message    : state.Message
+  messages   : state.Messages
 })
 
 
@@ -168,7 +171,8 @@ const mapDispatchToProps = (dispatch, getState)=> ({
   getCurrentUser     : () => User.getUser(dispatch, getState),
   logout             : () => User.logoutUser(dispatch, getState),
   getProductCategory : () => ProductCategory.getAll(dispatch, getState),
-  getChats           : () => Contact.getChats(dispatch, getState)
+  getChats           : () => Contact.getChats(dispatch, getState),
+  // getChatsMsgUnread  : uid => Message.searchUnreadMsg(uid)(dispatch, getState)
 })
 
 

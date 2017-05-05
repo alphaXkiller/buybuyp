@@ -4,14 +4,16 @@ import User            from './user.js'
 import Product         from './product.js'
 import ProductSearch   from './product-search.js'
 import ProductCategory from './product-category.js'
-import Message         from './message.js'
-import Chats           from './chats.js'
+import Messages         from './messages.js'
+import Chat            from './chat.js'
+import ChatMessage     from './chat-message.js'
 
 export default combineReducers({
-  Message,
+  Messages,
   Product,
   ProductSearch,
   ProductCategory,
   User,
-  Chats
+  Chat,
+  ChatMessage
 })

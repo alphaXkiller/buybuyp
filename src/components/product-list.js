@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import Divider  from 'material-ui/Divider'
 import Avatar   from 'material-ui/Avatar'
 
-import ChatBox        from './shared-components/message/chat-box.js'
+import ChatBox        from './chat/chat-box.js'
 import AvatarPopover  from './shared-components/avatar/avatar-popover.js'
 import { mapIndexed } from '../lib/helpers.js'
 

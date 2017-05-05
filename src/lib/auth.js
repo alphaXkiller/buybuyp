@@ -1,34 +1,33 @@
-import R from 'ramda'
+import R        from 'ramda'
 import Bluebird from 'bluebird'
 
-import { notNil } from '../lib/helpers.js'
-
-import * as Firebase from '../lib/firebase.js'
+import { notNil }         from '../lib/helpers.js'
+import { Auth, Firebase } from '../lib/_firebase/'
 
 const provider = {
-  google   : new Firebase.auth.GoogleAuthProvider(),
-  facebook : new Firebase.auth.FacebookAuthProvider()
+  google   : new Auth.GoogleAuthProvider(),
+  facebook : new Auth.FacebookAuthProvider()
 }
 
 const googleLogin = () => 
-  Firebase.ref.auth.signInWithRedirect(provider.google)
+  Firebase.auth.signInWithRedirect(provider.google)
 
 
 const facebookLogin = () => 
-  Firebase.ref.auth.signInWithRedirect(provider.facebook)
+  Firebase.auth.signInWithRedirect(provider.facebook)
 
 
 const emailLogin = ({email, password}) =>
-  Firebase.ref.auth.signInWithEmailAndPassword(email, password)
+  Firebase.auth.signInWithEmailAndPassword(email, password)
 
 
 const getRedirectResult = () => 
-  Firebase.ref.auth.getRedirectResult()
+  Firebase.auth.getRedirectResult()
 
 
 const onAuthStateChanged = () =>
   new Bluebird( (resolve, reject) =>
-    Firebase.ref.auth.onAuthStateChanged(resolve) 
+    Firebase.auth.onAuthStateChanged(resolve) 
   )
 
 
@@ -51,7 +50,7 @@ const getCurrentUser = () =>
   ))
 
 
-const logout = () => Firebase.ref.auth.signOut()
+const logout = () => Firebase.auth.signOut()
 
 
 export {
