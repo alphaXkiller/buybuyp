@@ -16,6 +16,7 @@ import Textarea           from '../shared-components/input/textarea.js'
 // Library
 import { Message } from '../../actions/index.js'
 import { 
+  notNil,
   notEquals,
   scrollToBotBySelector 
 } from '../../lib/helpers.js'
@@ -65,7 +66,8 @@ class ChatBox extends React.Component {
     this.state = {
       to_chat_room : R.defaultTo(false, props.to_chat_room),
       target_user  : R.defaultTo({}, props.target_user),
-      message_text : ''
+      message_text : '',
+      at_bottom    : true
     }
   }
 
@@ -75,30 +77,63 @@ class ChatBox extends React.Component {
       this.props.searchMsg([this.props.user.uid, this.state.target_user.uid], {
         init: true
       })
-      document.querySelector('body').classList.add('overflow-hidden')
     }
+
+    document.querySelector('body').classList.add('overflow-hidden')
+  }
+
+  componentWillUnmount() {
+    if (this.state.to_chat_room)
+      document.querySelector('body').classList.remove('overflow-hidden')
   }
 
 
   componentDidUpdate(prevProps, prevState) {
-    const updated_msg = this.props.messages
-    const prev_msg    = prevProps.messages
-    const has_new_msg = notEquals(R.last(updated_msg), R.last(prev_msg))
+    const updated_msgs  = this.props.messages
+    const prev_msgs     = prevProps.messages
+    const last_msg      = R.last(updated_msgs)
+    const prev_last_msg = R.last(prev_msgs)
+    const has_new_msg   = notEquals(last_msg, prev_last_msg)
+    const ids           = [this.props.user.uid, this.state.target_user.uid]
+    const iAmSender     = last_msg ? 
+      last_msg.speaker_uid === this.props.user.uid : false
+
+    const atChatBottom  = R.when(
+      notNil,
+      el => el.scrollHeight - el.scrollTop === el.clientHeight
+    )(document.querySelector('#chat-conversation'))
 
     // Enter chatroom from chat list
     if (this.state.to_chat_room && !prevState.to_chat_room) {
-      this.props.searchMsg([this.props.user.uid, this.state.target_user.uid], {
-        init: true
-      })
+      this.props.searchMsg(ids, { init: true})
       document.querySelector('body').classList.add('overflow-hidden')
     }
 
-    // First time entrance to a signle chat conversation
-    if (updated_msg.length > 0 && prev_msg.length === 0) 
+    if (this.state.to_chat_room && updated_msgs.length > 0) {
+      const conv_block = document.querySelector('#chat-conversation')
+      
+      // TODO: DEBOUNCE THIS SHIT!!!
+      conv_block.addEventListener('scroll', () => {
+        if (conv_block.scrollTop == 0) {
+          this.props.loadMoreMsg(ids, {
+            endAt: R.prop('id', R.head(updated_msgs))
+          })
+        }
+
+        // if (conv_block.scrollHeight - conv_block.scrollTop === conv_block.clientHeight)
+        //   this.setState({at_bottom: true})
+        // else 
+        //   this.setState({at_bottom: false})
+      })
+    }
+
+
+    // First time entry to a signle chat conversation
+    if (updated_msgs.length > 0 && prev_msgs.length === 0) 
       scrollToBotBySelector('#chat-conversation')
 
     // Login User is the sender
-    if (has_new_msg && R.last(updated_msg).speaker_uid === this.props.user.uid)
+    if (has_new_msg && (iAmSender || this.state.at_bottom))
       scrollToBotBySelector('#chat-conversation')
 
   }
@@ -195,7 +230,8 @@ const mapStateToProps = (state, props) => ({
 const mapDispatchToProps = (dispatch, getState) => ({
   searchMsg: (ids, option) => dispatch(
     Message.getMsg(ids, option)
-  )
+  ),
+  loadMoreMsg: (ids, option) => dispatch(Message.loadMore(ids, option))
 })
 
 

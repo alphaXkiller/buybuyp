@@ -39,8 +39,21 @@ const listenOnAdd = (ids, option, cb) => R.compose(
 )(ids)
 
 
+
+const loadMore = (ids, option, cb) => R.compose(
+  key => MessageDB.ref(key)
+  .orderByKey()
+  .endAt(option.endAt)
+  .limitToLast(15)
+  .once('value', cb),
+
+  _generateRefKey
+)(ids)
+
+
 export default {
   insert,
   get,
-  listenOnAdd
+  listenOnAdd,
+  loadMore 
 }

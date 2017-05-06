@@ -3,10 +3,10 @@ import Bluebird  from 'bluebird'
 import MessageDB from '../lib/message.js'
 
 const TYPE = {
-  get_msg_pending : 'get_msg_pending',
-  get_msg_success : 'get_msg_success',
-
-  new_incoming_msg : 'new_incoming_msg'
+  get_msg_pending       : 'get_msg_pending',
+  get_msg_success       : 'get_msg_success',
+  load_more_msg_success : 'load_more_msg_success',
+  new_incoming_msg      : 'new_incoming_msg'
 }
 
 
@@ -39,9 +39,20 @@ const getMsg = (ids, option) => (dispatch, getState) => Bluebird
   ))
 
 
+// =======================================
+// ========== LOAD MORE MESSAGE ==========
+// =======================================
+const loadMoreSuccessfully = payload => ({
+  type: TYPE.load_more_msg_success, payload
+})
+
+const loadMore = (ids, option) => (dispatch, getState) => MessageDB
+  .loadMore(ids, option, payload => dispatch(loadMoreSuccessfully(payload)))
+
 
 export default {
   TYPE,
   sendMsg,
   getMsg,
+  loadMore 
 }
