@@ -12,6 +12,7 @@ import Header from './components/header.js'
 import Footer from './components/footer/footer.js'
 import Chat   from './components/chat/chat-btn.js'
 
+import { DOM } from './lib/helpers/index.js'
 import { notEmpty, notNil, notEquals } from './lib/helpers.js'
 import { RouteFunctor, RouteActor }    from './routes.js'
 import { 
@@ -73,11 +74,7 @@ class App extends Component {
 
   onClickShowMenu = e => {
     e.preventDefault()
-    this.setState({show_menu: true}, () => {
-      // Boostrap set the body style overflow to be auto !important
-      // so the overlay cannot block the scrolling
-      document.getElementById('body').className = 'overflow-hidden'
-    })
+    this.setState({show_menu: true}, () => { DOM.lockBody() })
   }
 
 
@@ -85,9 +82,7 @@ class App extends Component {
     if (this.state.show_menu)
       this.setState({
         show_menu: false
-      }, () => {
-        document.getElementById('body').className = ''
-      })
+      }, () => { DOM.unlockBody() })
   }
 
 
@@ -105,6 +100,11 @@ class App extends Component {
 
   onClickLogout = e => {
     this.props.logout()
+  }
+
+
+  onClickToggleSignup = e => {
+    this.setState({show_signup: !this.state.show_signup})
   }
 
 
@@ -129,12 +129,14 @@ class App extends Component {
               Header({
                 show_user_menu         : this.state.show_user_menu,
                 open_login_modal       : this.state.open_login_modal,
+                show_signup            : this.state.show_signup,
                 onClickShowUserMenu    : this.onClickShowUserMenu,
                 onClickHideUserMenu    : this.onClickHideUserMenu,
                 onClickShowMenu        : this.onClickShowMenu,
                 onClickOpenLoginModal  : this.onClickOpenLoginModal,
                 onClickCloseLoginModal : this.onClickCloseLoginModal,
                 onClickLogout          : this.onClickLogout,
+                onClickToggleSignup    : this.onClickToggleSignup,
                 user                   : this.props.user,
               })
             }
@@ -172,7 +174,6 @@ const mapDispatchToProps = (dispatch, getState)=> ({
   logout             : () => User.logoutUser(dispatch, getState),
   getProductCategory : () => ProductCategory.getAll(dispatch, getState),
   getChats           : () => Contact.getChats(dispatch, getState),
-  // getChatsMsgUnread  : uid => Message.searchUnreadMsg(uid)(dispatch, getState)
 })
 
 

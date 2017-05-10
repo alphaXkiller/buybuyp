@@ -8,7 +8,8 @@ import Avatar     from 'material-ui/Avatar'
 import ChatBubble from 'material-ui/svg-icons/communication/chat-bubble'
 import Popover, { PopoverAnimationVertical }  from 'material-ui/Popover'
 
-import LoginForm from './shared-components/form/login.js'
+import LoginForm  from './shared-components/form/login.js'
+import SignupForm from './shared-components/form/signup.js'
 
 const _renderLoginUser = props => (
   <button className='btn frameless'>
@@ -50,11 +51,14 @@ const _renderAnonymousIcon = props => (
       modal={false}
       onRequestClose={props.onClickCloseLoginModal}
     >
-      <LoginForm />
+      {
+        props.show_signup ?
+          <SignupForm onClickToggleSignup={props.onClickToggleSignup} />
+        : <LoginForm onClickToggleSignup={props.onClickToggleSignup} />
+     }
     </Dialog>
   </div>
 )
-
 
 const Header = props => {
 
@@ -87,7 +91,9 @@ const Header = props => {
         : _renderAnonymousIcon({
           open_login_modal       : props.open_login_modal,
           onClickOpenLoginModal  : props.onClickOpenLoginModal,
-          onClickCloseLoginModal : props.onClickCloseLoginModal
+          onClickCloseLoginModal : props.onClickCloseLoginModal,
+          onClickToggleSignup    : props.onClickToggleSignup,
+          show_signup            : props.show_signup
         })
       }
     </header>

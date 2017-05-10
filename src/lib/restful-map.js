@@ -6,12 +6,11 @@ export default {
   'product_category' : '/product-category',
 
   // Require user login
-  'user'                 : '/api/user',
-  'user_validation'      : '/api/user/:uid/validate',
-  'user_get_by_uids'     : '/api/user/get-by-uids',
-  'user_product'         : '/api/product',
-  'user_product_details' : '/api/product/:id',
-  'image'                : '/api/image',
-  'contact'              : '/api/contact'
-  // 'chat_channel_all'  : '/api/chat-channel/:uid/all'
+  'user'                 : '/private/user',
+  'user_validation'      : '/private/user/:uid/validate',
+  'user_get_by_uids'     : '/private/user/get-by-uids',
+  'user_product'         : '/private/product',
+  'user_product_details' : '/private/product/:id',
+  'image'                : '/private/image',
+  'contact'              : '/private/contact'
 }

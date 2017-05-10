@@ -3,22 +3,21 @@
 // EXTERNAL LIB
 @import "~font-awesome/scss/font-awesome";
 @import '~bootstrap/scss/bootstrap.scss';
-@import 'library/animate.min.css';
+// @import 'library/animate.min.css';
 
 // OVERWRITE EXTERNAL LIB
-@import 'overwrite.scss';
+@import 'overwrite';
 
 // INTERNAL LIB
 @import './effect/_hoverable';
-@import './components/_global.scss';
 @import './components/_button';
 @import './components/_drawer';
 @import './components/_footer';
 @import './components/_loading';
-@import './components/_chat.scss';
+@import './components/_chat';
 
-@import './containers/_home.scss';
-@import './containers/_login.scss';
+@import './containers/_home';
+@import './containers/_login';
 
 
 body {

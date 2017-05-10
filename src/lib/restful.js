@@ -2,14 +2,13 @@ import Axios    from 'axios'
 import Bluebird from 'bluebird'
 import R        from 'ramda'
 
-import Path_map from './restful-map.js'
-import { getToken } from './auth.js'
+import Path_map          from './restful-map.js'
+import { getToken }      from './auth.js'
+import { notNilOrEmpty } from './helpers.js'
 
 
 const PARAMS_REGEX      = /:[a-zA-Z]*/
 const INDEX_AFTER_COLON = 1
-// const baseURL        = 'http://127.0.0.1:3031'
-const baseURL           = 'http://buybuy-api.us-west-2.elasticbeanstalk.com'
 
 
 const _key_list = R.match(PARAMS_REGEX)
@@ -17,6 +16,13 @@ const _key_list = R.match(PARAMS_REGEX)
 
 const _requireKeys = R.compose(R.not, R.isEmpty, _key_list)
   
+
+const getBaseUrl = () => R.ifElse(
+  R.equals('production'),
+  R.always('http://buybuy-api.us-west-2.elasticbeanstalk.com'),
+  R.always('/api')
+)(process.env.NODE_ENV)
+
 
 const parseKeys = R.curry( (url, keys) => {
   const swapKeyWithValue = (acc, val) => R.compose(
@@ -61,6 +67,7 @@ const solution = (instance, url, body) => ({
 const apiRequest = ({method, path, keys, query, body}) => {
 
   const _query = R.when(notNilOrEmpty, R.filter(notNilOrEmpty))(query)
+  const baseURL = getBaseUrl()
   let _url     = Path_map[path]
 
   if (R.isNil(_url)) throw new Error('WRONG PATH')
@@ -69,7 +76,7 @@ const apiRequest = ({method, path, keys, query, body}) => {
   if (_query) _url = parseQuery(_url)(_query)
 
   // TODO: SUPPOSE TO USE ASYNC/AWAIT, BUT BROWSER SUPPORT IS SO POOR
-  if (R.test(/^\/api\//)(_url)) {
+  if (R.test(/^\/private\//)(_url)) {
     return getToken()
       
       .then( token => {

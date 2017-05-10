@@ -66,37 +66,27 @@ const Nav = props => {
       containerStyle={{
         overflowX: 'hidden'
       }}
+      containerClassName='drawer-container'
     >
       { is_user_login ? _renderUser(props.user) : null }
-      <div 
-        className={R.join(' ', [
-          'd-flex flex-column main-left-menu',
-          is_user_login ? 'left-menu-height' : ''
-        ])}
-      >
-        <Menu>
-          <Link to='/' onTouchTap={props.onClickHideMenu} >
-            <MenuItem primaryText='Home' leftIcon={<HomeIcon />} />
-          </Link>
-          <ListItem 
-            primaryText='Category' 
-            leftIcon={<CatIcon />}
-            primaryTogglesNestedList={true}
-            nestedItems={ mapIndexed(
-              _renderCategory(props.onClickHideMenu)
-            )(props.categories) }
-          />
-        </Menu>
-
-        <Link 
-          className='mt-auto'
-          to='/dashboard/sell' 
-          onTouchTap={props.onClickHideMenu}
-        >
-          <Divider />
-          <MenuItem primaryText='Sell' leftIcon={<ShopIcon />}/>
+      <Menu style={{height: '100%', overflowY: 'auto'}}>
+        <Link to='/' onTouchTap={props.onClickHideMenu} >
+          <MenuItem primaryText='Home' leftIcon={<HomeIcon />} />
         </Link>
-      </div>
+        <ListItem 
+          primaryText='Category' 
+          leftIcon={<CatIcon />}
+          primaryTogglesNestedList={true}
+          nestedItems={ mapIndexed(
+            _renderCategory(props.onClickHideMenu)
+          )(props.categories) }
+        />
+      </Menu>
+      <Link to='/dashboard/sell' onTouchTap={props.onClickHideMenu}>
+        <Divider />
+        <MenuItem primaryText='Sell' leftIcon={<ShopIcon />}/>
+      </Link>
+
     </Drawer>
   )
 }

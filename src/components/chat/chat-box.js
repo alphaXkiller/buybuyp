@@ -20,6 +20,7 @@ import {
   notEquals,
   scrollToBotBySelector 
 } from '../../lib/helpers.js'
+import { DOM } from '../../lib/helpers/index.js'
 
 
 const _renderTargetUser = target_user => (
@@ -71,20 +72,21 @@ class ChatBox extends React.Component {
     }
   }
 
+  componentWillMount() {
+    DOM.lockBody()
+  }
+
   componentDidMount() {
     // Enter chatroom from other entry other than chat list
     if (this.state.to_chat_room) {
-      this.props.searchMsg([this.props.user.uid, this.state.target_user.uid], {
+      this.props.getMsg([this.props.user.uid, this.state.target_user.uid], {
         init: true
       })
     }
-
-    document.querySelector('body').classList.add('overflow-hidden')
   }
 
   componentWillUnmount() {
-    if (this.state.to_chat_room)
-      document.querySelector('body').classList.remove('overflow-hidden')
+    DOM.unlockBody()
   }
 
 
@@ -105,7 +107,7 @@ class ChatBox extends React.Component {
 
     // Enter chatroom from chat list
     if (this.state.to_chat_room && !prevState.to_chat_room) {
-      this.props.searchMsg(ids, { init: true})
+      this.props.getMsg(ids, { init: true})
       document.querySelector('body').classList.add('overflow-hidden')
     }
 
@@ -228,7 +230,7 @@ const mapStateToProps = (state, props) => ({
 
 
 const mapDispatchToProps = (dispatch, getState) => ({
-  searchMsg: (ids, option) => dispatch(
+  getMsg: (ids, option) => dispatch(
     Message.getMsg(ids, option)
   ),
   loadMoreMsg: (ids, option) => dispatch(Message.loadMore(ids, option))

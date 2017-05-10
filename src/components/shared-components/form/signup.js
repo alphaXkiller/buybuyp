@@ -54,6 +54,12 @@ class Signup extends Component {
           </div>
           <button className='btn btn-primary' type='submit'>sign up</button>
         </form>
+
+        <div>
+          <button onTouchTap={this.props.onClickToggleSignup}>
+            Already have a account? Login
+          </button>
+        </div>
       </div>
 
     )
