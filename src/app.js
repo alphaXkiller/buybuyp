@@ -7,16 +7,15 @@ import {
 } from 'react-router-dom'
 
 
-import Nav    from './components/nav.js'
-import Header from './components/header.js'
-import Footer from './components/footer/footer.js'
-import Chat   from './components/chat/chat-btn.js'
+import Nav     from './components/nav.js'
+import Header  from './components/header.js'
+import Footer  from './components/footer/footer.js'
+import ChatBtn from './components/chat/chat-btn.js'
 
 import { DOM } from './lib/helpers/index.js'
 import { notEmpty, notNil, notEquals } from './lib/helpers.js'
 import { RouteFunctor, RouteActor }    from './routes.js'
 import { 
-  Messages, 
   Contact, 
   User, 
   Product, 
@@ -38,7 +37,9 @@ class App extends Component {
 
   componentDidMount() {
     this.props.getProductCategory()
-    this.props.getCurrentUser()
+
+    if (this.props.user.uid)
+      this.props.getChats()
   }
 
 
@@ -52,12 +53,8 @@ class App extends Component {
 
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.user !== this.props.user)
+    if (!this.props.user.uid)
       this.setState({show_user_menu: false})
-
-    // Get Chat for login user
-    if (this.props.user.uid)
-      this.props.getChats()
   }
 
 
@@ -152,7 +149,7 @@ class App extends Component {
                   ))
                 }
               </Switch>
-              { this.props.user.uid ? <Chat /> : null }
+              { this.props.user.uid ? <ChatBtn /> : null }
             </main>
             { Footer() }
           </div>
@@ -164,16 +161,14 @@ class App extends Component {
 
 const mapStateToProps = (state, props)=> ({
   categories : state.ProductCategory,
-  user       : state.User,
-  messages   : state.Messages
+  user       : state.User
 })
 
 
-const mapDispatchToProps = (dispatch, getState)=> ({
-  getCurrentUser     : () => User.getUser(dispatch, getState),
-  logout             : () => User.logoutUser(dispatch, getState),
-  getProductCategory : () => ProductCategory.getAll(dispatch, getState),
-  getChats           : () => Contact.getChats(dispatch, getState),
+const mapDispatchToProps = (dispatch, props)=> ({
+  logout             : () => dispatch(User.logoutUser),
+  getProductCategory : () => dispatch(ProductCategory.getAll),
+  getChats           : () => dispatch(Contact.getChats)
 })
 
 
