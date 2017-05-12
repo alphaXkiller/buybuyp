@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import Divider  from 'material-ui/Divider'
 import Avatar   from 'material-ui/Avatar'
 
-import ChatBox        from './chat/chat-box.js'
+import Chat        from './chat/chat.js'
 import AvatarPopover  from './shared-components/avatar/avatar-popover.js'
 import { mapIndexed } from '../lib/helpers.js'
 
@@ -93,9 +93,9 @@ class ProductList extends React.Component {
           // render a chatbox on top of the whole containers lay,
           // not just the component itself
           this.state.open_chat ? 
-            <ChatBox 
+            <Chat 
               onClickClose={this.closeChatBox} 
-              to_chat_room={true}
+              chat_room={true}
               target_user={this.state.target_user}
             /> 
           : null
