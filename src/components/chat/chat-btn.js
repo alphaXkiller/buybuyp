@@ -4,7 +4,7 @@ import React from 'react'
 import ChatIcon             from 'material-ui/svg-icons/communication/chat'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 
-import ChatBox from './chat-box.js'
+import Chat from './chat.js'
 
 class ChatBtn extends React.Component {
   constructor() {
@@ -24,7 +24,7 @@ class ChatBtn extends React.Component {
       <div >
         {
           this.state.is_open ?
-            <ChatBox onClickClose={this.toggleChatbox}/>
+            <Chat onClickClose={this.toggleChatbox}/>
           : null
         }
         <FloatingActionButton

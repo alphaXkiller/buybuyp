@@ -1,8 +1,7 @@
-import R from 'ramda'
+import R        from 'ramda'
 import Bluebird from 'bluebird'
-import Cookie from 'js-cookie'
 
-import Api from '../lib/restful.js'
+import Api        from '../lib/restful.js'
 import { notNil } from '../lib/helpers.js'
 
 import {
