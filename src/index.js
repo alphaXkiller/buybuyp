@@ -16,21 +16,27 @@ import { getCurrentUser } from './lib/auth.js'
 ReactTapEventPlugin()
 
 let composeEnhancers = compose
-if (process.env.NODE_ENV !== 'production') {
-  // composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+// }
 
-const store = createStore(
-  Reducers,
-  composeEnhancers(applyMiddleware(Thunk))
-)
+getCurrentUser()
+  .then( user => {
+    const User = R.defaultTo({}, user)
+    let store = createStore(
+      Reducers,
+      {User},
+      composeEnhancers(applyMiddleware(Thunk))
+    )
 
-ReactDom.render(
-  <Provider store={store}>
-    <MuiThemeProvider>
-      <App />
-    </MuiThemeProvider>
-  </Provider>,
-  document.getElementById('buybuy')
-)
+    ReactDom.render(
+      <Provider store={store}>
+        <MuiThemeProvider>
+          <App />
+        </MuiThemeProvider>
+      </Provider>,
+      document.getElementById('buybuy')
+    )
+  })
+
 
