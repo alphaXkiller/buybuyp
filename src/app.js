@@ -55,6 +55,9 @@ class App extends Component {
   componentDidUpdate(prevProps, prevState) {
     if (!this.props.user.uid)
       this.setState({show_user_menu: false})
+
+    if (this.props.user.uid && this.state.open_login_modal)
+      this.setState({open_login_modal: false})
   }
 
 

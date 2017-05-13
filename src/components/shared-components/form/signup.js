@@ -5,12 +5,7 @@ import { connect }          from 'react-redux'
 import { User } from '../../../actions/index.js'
 
 class Signup extends Component {
-  constructor() {
-    super()
-    this.submit = this.submit.bind(this)
-  }
-
-  submit(e) {
+  submit = e => {
     e.preventDefault()
     this.props.signup({
       name     : e.target.name.value,
@@ -24,44 +19,45 @@ class Signup extends Component {
       <div className={R.join(' ', ['signup', this.props.show_class])}>
         <form className='d-flex flex-column' onSubmit={this.submit}>
           {
-            this.props.error_message ? 
-              <p>{this.props.error_message}</p>
+            this.props.user.error_message ? 
+              <p>{this.props.user.error_message}</p>
               : null
           }
           <div className='form-group'>
             <input
               className='form-control' 
-              placeholder='name' 
+              placeholder='*name' 
               name='name'
               type='text'
+              required
             />
           </div>
           <div className='form-group'>
             <input 
               className='form-control' 
-              placeholder='email' 
+              placeholder='*email' 
               name='email'
               type='email'
+              required
             />
           </div>
           <div className='form-group'>
             <input 
               className='form-control' 
-              placeholder='password' 
+              placeholder='*password' 
               name='password'
               type='password'
+              required
             />
           </div>
           <button className='btn btn-primary' type='submit'>sign up</button>
+          <div className='text-center mt-1'>
+            <p>Already have an account?
+              <span onTouchTap={this.props.onClickToggleSignup}> Login</span>
+            </p>
+          </div>
         </form>
-
-        <div>
-          <button onTouchTap={this.props.onClickToggleSignup}>
-            Already have a account? Login
-          </button>
-        </div>
       </div>
-
     )
   }
 }
@@ -69,8 +65,7 @@ class Signup extends Component {
 
 const mapStateToProps = (state, props) => ({
   show_class: props.show_signup ? ' show' : null,
-  error_message: R.path(['User', 'error_message'])(state) ? 
-    state.User.error_message : null
+  user: state.User,
 })
 
 

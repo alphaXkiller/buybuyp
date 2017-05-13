@@ -17,11 +17,19 @@ const user_reducer = (state = {}, action) => R.cond([
   ],
   [
     R.equals(User.TYPE.signup_failed),
-    signup_status => R.merge(state, {
-      error: action.payload.error, 
-      error_mesage: action.payload.message,
-      validation: action.payload.validation,
+    signup_status => ({
+      error: action.payload,
+      error_message: action.payload.message,
+      error_code: action.payload.code,
       signup_status
+    })
+  ],
+  [
+    R.equals(User.TYPE.login_failed),
+    ()  => ({
+      error: action.payload,
+      error_message: action.payload.message,
+      error_code: action.payload.code,
     })
   ],
   [ R.T, R.always(state) ]

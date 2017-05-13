@@ -10,31 +10,23 @@ import {
   emailLogin,
   getToken,
   getRedirectResult,
-  onAuthStateChanged,
   getCurrentUser,
-  logout
+  logout,
+  emailSignup
 } from '../lib/auth.js'
 
 const TYPE = {
-  // login_pending    : 'login_pending',
-  // login_success    : 'login_successfully',
   logout_pending   : 'logout_pending',
   logout_success   : 'logout_successfully',
   signup_pending   : 'signup_pending',
   signup_success   : 'signup_successfully',
   signup_failed    : 'signup_failed',
-  get_user_pending : 'get_user_pending',
+  login_failed     : 'login_failed',
   get_user_success : 'get_user_successfully'
 }
 
 // ========== Export function ==========
 // =====================================
-const loginStart = () => ({ type: TYPE.login_pending })
-
-
-const loginSuccessfully = payload => ({ type: TYPE.login_success, payload })
-
-
 const signupStart = () => ({ type: TYPE.signup_pending })
 
 
@@ -44,7 +36,7 @@ const signupSuccessfully = () => ({ type: TYPE.signup_success})
 const signupFailed = payload => ({ type: TYPE.signup_failed, payload })
 
 
-const getUserStart = () => ({ type: TYPE.get_user_pending })
+const loginFailed = payload => ({ type: TYPE.login_failed, payload })
 
 
 const getUserSuccessfully = payload => ({ type: TYPE.get_user_success, payload })
@@ -62,29 +54,8 @@ const loginGoogle = (dispatch, getState) => Bluebird.resolve(googleLogin())
 const loginFacebook = (dispatch, getState) => Bluebird.resolve(facebookLogin())
 
 
-const loginEmail = ({email, password}) => (dispatch, getState) => 
-  emailLogin({email, password})
-
-
-
-const signup = ({name, email, password}) => (dispatch, getState) =>
-  Bluebird.resolve(dispatch(signupStart()))
-
-  .then(() => Api({
-    method: 'post',
-    path: 'signup', 
-    body: { name, email, password }
-  }))
-
-  .then(() => dispatch(signupSuccessfully()))
-
-  .catch( err => dispatch(signupFailed(err.data)) )
-
-
 const getUser = (dispatch, getState) => Bluebird
-  .resolve(dispatch(getUserStart()))
-
-  .then( () => getCurrentUser() )
+  .resolve( getCurrentUser() )
 
   .tap( user => dispatch(getUserSuccessfully(user)) )
 
@@ -94,6 +65,24 @@ const getUser = (dispatch, getState) => Bluebird
     keys: { uid: user.uid },
     body: user
   })))
+
+
+const signup = ({name, email, password}) => (dispatch, getState) => 
+  emailSignup(name, email, password)
+
+  .then(() => dispatch(signupSuccessfully()))
+
+  .then(() => getUser(dispatch, getState))
+
+  .catch( err => dispatch(signupFailed(err)) )
+
+
+const loginEmail = ({email, password}) => (dispatch, getState) => 
+  emailLogin({email, password})
+
+  .then(() => getUser(dispatch, getState))
+
+  .catch( err => dispatch(loginFailed(err)) )
 
 
 const logoutUser = (dispatch, getState) =>

@@ -11,6 +11,8 @@ import Popover, { PopoverAnimationVertical }  from 'material-ui/Popover'
 import LoginForm  from './shared-components/form/login.js'
 import SignupForm from './shared-components/form/signup.js'
 
+const CONTENT_STYLE = {maxWidth: '320px'}
+
 const _renderLoginUser = props => (
   <button className='btn frameless'>
     <Avatar 
@@ -50,11 +52,18 @@ const _renderAnonymousIcon = props => (
       open={props.open_login_modal}
       modal={false}
       onRequestClose={props.onClickCloseLoginModal}
+      contentStyle={CONTENT_STYLE}
     >
       {
         props.show_signup ?
-          <SignupForm onClickToggleSignup={props.onClickToggleSignup} />
-        : <LoginForm onClickToggleSignup={props.onClickToggleSignup} />
+          <SignupForm 
+            onClickToggleSignup={props.onClickToggleSignup} 
+            closeModal={props.onClickCloseLoginModal}
+          />
+        : <LoginForm 
+            onClickToggleSignup={props.onClickToggleSignup} 
+            closeModal={props.onClickCloseLoginModal}
+          />
      }
     </Dialog>
   </div>

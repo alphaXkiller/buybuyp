@@ -53,6 +53,17 @@ const getCurrentUser = () =>
 const logout = () => Firebase.auth.signOut()
 
 
+const emailSignup = (displayName, email, password) => Firebase
+  .auth
+  
+  .createUserWithEmailAndPassword(email, password)
+
+  .then( user => Bluebird.all([
+    user.sendEmailVerification(),
+    user.updateProfile({displayName})
+  ]))
+
+
 export {
   googleLogin,
   facebookLogin,
@@ -61,5 +72,6 @@ export {
   getRedirectResult,
   onAuthStateChanged,
   getCurrentUser,
-  logout
+  logout,
+  emailSignup
 }
