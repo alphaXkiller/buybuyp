@@ -74,10 +74,13 @@ class ProductList extends React.Component {
   }
 
 
-  startChatting = target_user => this.setState({
-    open_chat: true,
-    target_user
-  })
+  startChatting = target_user => {
+    this.props.addContactIfNotInList(target_user.uid)
+    this.setState({
+      open_chat: true,
+      target_user
+    })
+  }
 
 
   render() {

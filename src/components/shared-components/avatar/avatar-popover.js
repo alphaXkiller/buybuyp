@@ -25,7 +25,6 @@ class AvatarPopover extends React.Component {
 
 
   closePopover = reason => {
-    console.log('here')
     if (reason === 'clickAway')
       this.setState({is_open: false})
   }

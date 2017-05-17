@@ -9,7 +9,7 @@ import ProductList          from '../../components/product-list.js'
 import SearchBar            from '../../components/search-bar.js'
 import CatImg               from '../../../img/cat-img.jpg'
 
-import { Product }                  from '../../actions/index.js'
+import { Product, Contact }                  from '../../actions/index.js'
 import { notEquals, notNilOrEmpty } from '../../lib/helpers.js'
 
 
@@ -50,6 +50,14 @@ class Home extends Component {
   }
 
 
+  addContactIfNotInList = target_uid => {
+    const has_contact = R.find(R.propEq('uid', target_uid), this.props.contacts)
+
+    if (!has_contact)
+      this.props.addContact(target_uid)
+  }
+
+
   render() {
     return (
       <div>
@@ -66,7 +74,10 @@ class Home extends Component {
           { 
             this.state.loading ?
               <div className='loading-primary' />
-            : <ProductList products={this.props.products}/>
+            : <ProductList 
+                products={this.props.products}
+                addContactIfNotInList={this.addContactIfNotInList}
+              />
           }
           <div className='d-flex col-sm-12 justify-content-center p-4'>
             <FloatingActionButton
@@ -83,7 +94,8 @@ class Home extends Component {
 
 
 const mapStateToProps = (state, props) => ({
-  products  : state.ProductSearch.rows,
+  contacts      : state.Contact.rows,
+  products      : state.ProductSearch.rows,
   product_count : state.ProductSearch.count,
   category      : state.ProductCategory,
   category_name : R.compose(
@@ -98,7 +110,8 @@ const mapStateToProps = (state, props) => ({
 
 const mapDispatchToProps = dispatch => ({
   searchProduct     : query => dispatch(Product.search(query)),
-  searchProductMore : query => dispatch(Product.searchMore(query))
+  searchProductMore : query => dispatch(Product.searchMore(query)),
+  addContact        : target_uid => dispatch(Contact.add(target_uid))
 })
 
 

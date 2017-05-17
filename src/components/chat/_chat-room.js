@@ -19,6 +19,7 @@ const isChatting = element => R.compose(
 )(element)
 
 
+const inContact = target_uid => R.find(R.propEq('uid', target_uid))
 
 const getConversation = target_uid => R.compose(
   R.ifElse(
@@ -62,17 +63,21 @@ class ChatRoom extends React.Component {
   constructor() {
     super()
     this.state = {
-      text: '',
-      conversation_window: {},
-      scroll_height: 0,
-      loading_more_msg: false
+      text                : '',
+      conversation_window : {},
+      scroll_height       : 0,
+      loading_more_msg    : false,
     }
   }
 
 
   componentDidMount() {
     DOM.scrollToBotBySelector('#chat-conversation') 
-    this.props.listenOnNewMsg()
+
+    if (inContact(this.props.target_user.uid)(this.props.contacts)) {
+      this.props.listenOnNewMsg()
+      this.setState({listening_new_msg: true})
+    }
 
     this.setState({ 
       conversation_window: document.querySelector('#chat-conversation') 
@@ -83,18 +88,33 @@ class ChatRoom extends React.Component {
 
 
   componentDidUpdate(prevProps, prevState) {
+    // Keep conversation window to the bottom while chatting
     if (isChatting(this.state.conversation_window))
       DOM.scrollToBotBySelector('#chat-conversation') 
 
-    if (this.state.loading_more_msg)
+    if (R.isEmpty(prevProps.conversation) && !R.isEmpty(this.props.conversation))
+      DOM.scrollToBotBySelector('#chat-conversation') 
+
+    // Loading more msg, and remain on the same chat location
+    if (this.state.loading_more_msg) {
       this.state.conversation_window.scrollTop = R.subtract(
         this.state.conversation_window.scrollHeight, this.state.scroll_height
       )
+
+      this.setState({loading_more_msg: false})
+    }
+
+    if (R.and(
+      !inContact(this.props.target_user.uid)(prevProps.contacts),
+      inContact(this.props.target_user.uid)(this.props.contacts)
+    ))
+      this.props.getConversation()
   }
 
 
   componentWillUnmount() {
     //TODO: STOP LISTENING ON NEW MSG
+    //TODO: REMOVE CONVERSATION WINDOW LISTENER
   }
 
 
@@ -148,6 +168,7 @@ class ChatRoom extends React.Component {
 
 const mapStateToProps = (state, props) => ({
   user: state.User,
+  contacts: state.Contact.rows,
   target_user: props.target_user,
   conversation: getConversation(props.target_user.uid)(state.Contact.rows)
 })
@@ -162,6 +183,9 @@ const mapDispatchToProps = (dispatch, props) => ({
   ),
   loadMoreMsg: () => dispatch(
     Contact.loadMoreMsg(props.target_user.uid)
+  ),
+  getConversation: () => dispatch(
+    Contact.getConversation(props.target_user.uid)
   )
 })
 

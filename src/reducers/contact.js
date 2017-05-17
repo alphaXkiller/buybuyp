@@ -45,6 +45,15 @@ const prependMoreMsg = (contact_index, contact, payload) => R.compose(
 )(contact.rows[contact_index].conversation)
 
 
+const _appendNewContact = current_contact => R.compose(
+  rows => R.merge(current_contact, { rows }),
+  R.prepend(R.__, current_contact.rows)
+)
+
+
+// ============================
+// ========== REDUCER =========
+// ============================
 const reducer = (contact={}, action) => R.cond([
   [
     R.equals(Contact.TYPE.receive_chats), 
@@ -69,6 +78,22 @@ const reducer = (contact={}, action) => R.cond([
       rows => R.merge(contact, { rows })
       ,
       index => prependMoreMsg(index, contact, action.payload)
+      ,
+      R.findIndex(R.propEq('uid', action.target_uid))
+    )(contact.rows)
+  ]
+  ,
+  [
+    R.equals(Contact.TYPE.add_contact),
+    () => _appendNewContact(contact)(action.payload)
+  ]
+  ,
+  [
+    R.equals(Contact.TYPE.get_conversation),
+    () => R.compose(
+      rows => R.merge(contact, { rows })
+      ,
+      index => updateConversation(index, contact.rows)(action.payload)
       ,
       R.findIndex(R.propEq('uid', action.target_uid))
     )(contact.rows)
