@@ -74,15 +74,13 @@ class App extends Component {
 
   onClickShowMenu = e => {
     e.preventDefault()
-    this.setState({show_menu: true}, () => { DOM.lockBody() })
+    this.setState({show_menu: true})
   }
 
 
   onClickHideMenu = e => {
     if (this.state.show_menu)
-      this.setState({
-        show_menu: false
-      }, () => { DOM.unlockBody() })
+      this.setState({show_menu: false})
   }
 
 
@@ -152,8 +150,8 @@ class App extends Component {
                   ))
                 }
               </Switch>
-              { this.props.user.uid ? <ChatBtn /> : null }
             </main>
+            { this.props.user.uid ? <ChatBtn /> : null }
             { Footer() }
           </div>
         </div>

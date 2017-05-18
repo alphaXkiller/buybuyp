@@ -10,7 +10,6 @@ import BackArrowIcon from 'material-ui/svg-icons/navigation/chevron-left'
 import ChatRoom from './_chat-room.js'
 import ChatList from './_chat-list.js'
 
-import { DOM } from '../../lib/helpers/index.js'
 
 const renderTargetUser = target_user => (
   <div className='container h-100'>
@@ -29,14 +28,6 @@ class Chat extends React.Component {
       chat_room: R.defaultTo(false, props.chat_room),
       target_user: R.defaultTo({}, props.target_user)
     }
-  }
-
-  componentDidMount() {
-    DOM.lockBody()
-  }
-
-  componentWillUnmount() {
-    DOM.unlockBody()
   }
 
   goChatRoom = target_user => e => this.setState({chat_room: true, target_user})

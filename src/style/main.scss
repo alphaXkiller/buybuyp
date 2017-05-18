@@ -1,4 +1,5 @@
 @import './helpers/_variable.scss';
+@import './helpers/_mixin.scss';
 
 // EXTERNAL LIB
 @import "~font-awesome/scss/font-awesome";
@@ -7,6 +8,7 @@
 
 // OVERWRITE EXTERNAL LIB
 @import 'overwrite';
+@import 'global';
 
 // INTERNAL LIB
 @import './effect/_hoverable';
@@ -20,19 +22,6 @@
 @import './containers/_home';
 @import './containers/_login';
 
-
-body {
-  background-color: $color-primary
-}
-
-main {
-  margin-top: 80px;
-  padding-bottom: 80px;
-}
-
-.overflow-hidden {
-  overflow: hidden !important;
-}
 
 .mask-white {
   background-color: rgba(255, 255, 255, 0.1);

@@ -1,15 +1,15 @@
 // break point
 $breakpoints: (
-  'sm': 576px;
-  'md': 768px;
-  'lg': 992px;
-  'xl': 1200px;
+  'sm': 576px,
+  'md': 768px,
+  'lg': 992px,
+  'xl': 1200px,
 );
 
 
 @mixin bp($name) {
   @if map-has-key($breakpoints, $name) {
-    @media #{inspect(map-get($breakpoints, $name))} {
+    @media (min-width: map-get($breakpoints, $name)) {
       @content;
     }
   }
