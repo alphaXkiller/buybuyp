@@ -1,20 +1,26 @@
-import R                    from 'ramda'
-import React, { Component } from 'react'
-import { connect }          from 'react-redux'
-import { 
-  BrowserRouter as Router } from 'react-router-dom'
+import R                           from 'ramda'
+import React, { Component }        from 'react'
+import { connect }                 from 'react-redux'
+import {
+  BrowserRouter as Router,
+  Switch
+} from 'react-router-dom'
 
-import { 
-  RouteFunctor, 
-  RouteActor 
-} from './routes.js'
-import Nav    from './components/nav/nav.js'
-import Header from './components/header/header.js'
-import Footer from './components/footer/footer.js'
 
-import { User }                        from './actions/index.js'
+import Nav     from './components/nav.js'
+import Header  from './components/header.js'
+import Footer  from './components/footer/footer.js'
+import ChatBtn from './components/chat/chat-btn.js'
+
+import { DOM } from './lib/helpers/index.js'
 import { notEmpty, notNil, notEquals } from './lib/helpers.js'
-import { getCurrentUser } from './lib/auth.js'
+import { RouteFunctor, RouteActor }    from './routes.js'
+import { 
+  Contact, 
+  User, 
+  Product, 
+  ProductCategory 
+} from './actions/index.js'
 
 import './style/main.scss'
 
@@ -23,17 +29,19 @@ class App extends Component {
     super()
     this.state = {
       show_menu         : false,
-      show_login        : false,
-      show_signup       : false,
       show_user_menu    : false,
-      show_header_color : window.scrollY > 0,
       open_login_modal  : false
     }
   }
 
+
   componentDidMount() {
-    window.addEventListener('scroll', this.showHeaderBgColor)
+    this.props.getProductCategory()
+
+    if (this.props.user.uid)
+      this.props.getChats()
   }
+
 
   shouldComponentUpdate(nextProps, nextState) {
     const same_state = R.equals(this.state)(nextState)
@@ -43,24 +51,17 @@ class App extends Component {
     else return true
   }
 
+
   componentDidUpdate(prevProps, prevState) {
-    if (prevProps.user !== this.props.user)
+    if (!this.props.user.uid)
       this.setState({show_user_menu: false})
+
+    if (this.props.user.uid && this.state.open_login_modal)
+      this.setState({open_login_modal: false})
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.showHeaderBgColor)
-  }
 
-
-  showHeaderBgColor = e => R.ifElse(
-    R.gt(R.__, 0),
-    () => this.setState({show_header_color: true}),
-    () => this.setState({show_header_color: false})
-  )(window.scrollY)
-
-
-  onClickCloseLoginModal = (reason) => {
+  onClickCloseLoginModal = reason => {
     this.setState({open_login_modal: false})
   }
 
@@ -73,23 +74,13 @@ class App extends Component {
 
   onClickShowMenu = e => {
     e.preventDefault()
-    this.setState({show_menu: true}, () => {
-      // Boostrap set the body style overflow to be auto !important
-      // so the overlay cannot block the scrolling
-      document.getElementById('body').className = 'overflow-hidden'
-    })
+    this.setState({show_menu: true})
   }
 
 
   onClickHideMenu = e => {
     if (this.state.show_menu)
-      this.setState({
-        show_menu: false,
-        show_login: false,
-        show_signup: false
-      }, () => {
-        document.getElementById('body').className = ''
-      })
+      this.setState({show_menu: false})
   }
 
 
@@ -109,14 +100,23 @@ class App extends Component {
     this.props.logout()
   }
 
+
+  onClickToggleSignup = e => {
+    this.setState({show_signup: !this.state.show_signup})
+  }
+
+
   render() {
+
     return (
       <Router>
         <div>
           {
             Nav({
-              show_menu           : this.state.show_menu,
-              onClickHideMenu     : this.onClickHideMenu,
+              user            : this.props.user,
+              show_menu       : this.state.show_menu,
+              categories      : this.props.categories,
+              onClickHideMenu : this.onClickHideMenu
             })
           }
           <div 
@@ -126,28 +126,32 @@ class App extends Component {
             {
               Header({
                 show_user_menu         : this.state.show_user_menu,
-                show_header_color      : this.state.show_header_color,
                 open_login_modal       : this.state.open_login_modal,
+                show_signup            : this.state.show_signup,
                 onClickShowUserMenu    : this.onClickShowUserMenu,
                 onClickHideUserMenu    : this.onClickHideUserMenu,
                 onClickShowMenu        : this.onClickShowMenu,
                 onClickOpenLoginModal  : this.onClickOpenLoginModal,
                 onClickCloseLoginModal : this.onClickCloseLoginModal,
                 onClickLogout          : this.onClickLogout,
-                user                   : this.props.user
+                onClickToggleSignup    : this.onClickToggleSignup,
+                user                   : this.props.user,
               })
             }
             <main>
-              {
-                RouteFunctor.map( (route, i) => (
-                  <RouteActor 
-                    key={i} 
-                    user={this.props.user} 
-                    {...route} 
-                  />
-                ))
-              }
+              <Switch>
+                {
+                  RouteFunctor.map( (route, i) => (
+                    <RouteActor 
+                      key={i} 
+                      user={this.props.user} 
+                      {...route} 
+                    />
+                  ))
+                }
+              </Switch>
             </main>
+            { this.props.user.uid ? <ChatBtn /> : null }
             { Footer() }
           </div>
         </div>
@@ -157,12 +161,15 @@ class App extends Component {
 }
 
 const mapStateToProps = (state, props)=> ({
-  user: state.User
+  categories : state.ProductCategory,
+  user       : state.User
 })
 
 
-const mapDispatchToProps = (dispatch, getState)=> ({
-  logout: () => User.logoutUser(dispatch, getState)
+const mapDispatchToProps = (dispatch, props)=> ({
+  logout             : () => dispatch(User.logoutUser),
+  getProductCategory : () => dispatch(ProductCategory.getAll),
+  getChats           : () => dispatch(Contact.getChats)
 })
 
 

@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import { connect }          from 'react-redux'
 import RaisedButton         from 'material-ui/RaisedButton'
 import FlatButton           from 'material-ui/FlatButton'
-import { Stepper } from 'material-ui/Stepper'
+import { Stepper }          from 'material-ui/Stepper'
 
 import StepInfo 
 from '../../components/shared-components/stepper/info.js'

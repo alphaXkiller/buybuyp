@@ -1,21 +1,27 @@
 @import './helpers/_variable.scss';
+@import './helpers/_mixin.scss';
+
+// EXTERNAL LIB
 @import "~font-awesome/scss/font-awesome";
 @import '~bootstrap/scss/bootstrap.scss';
-//@import '~mdbootstrap/sass/mdb.scss';
+// @import 'library/animate.min.css';
 
-@import 'overwrite.scss';
+// OVERWRITE EXTERNAL LIB
+@import 'overwrite';
+@import 'global';
 
-@import './components/_button.scss';
-@import './containers/_home.scss';
-@import './containers/_login.scss';
+// INTERNAL LIB
+@import './effect/_hoverable';
+@import './components/_button';
+@import './components/_drawer';
+@import './components/_footer';
+@import './components/_loading';
+@import './components/_chat';
+@import './components/_login';
 
-body {
-  background-color: $color-primary
-}
+@import './containers/_home';
+@import './containers/_login';
 
-.overflow-hidden {
-  overflow: hidden !important;
-}
 
 .mask-white {
   background-color: rgba(255, 255, 255, 0.1);

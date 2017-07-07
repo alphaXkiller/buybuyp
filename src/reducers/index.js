@@ -1,11 +1,15 @@
 import { combineReducers } from 'redux'
 
-import User           from './user.js'
-import Product        from './product.js'
-import Product_search from './product-search.js'
+import User            from './user.js'
+import Product         from './product.js'
+import ProductSearch   from './product-search.js'
+import ProductCategory from './product-category.js'
+import Contact         from './contact.js'
 
 export default combineReducers({
-  User,
   Product,
-  Product_search
+  ProductSearch,
+  ProductCategory,
+  User,
+  Contact,
 })

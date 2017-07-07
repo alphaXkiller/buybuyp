@@ -18,11 +18,18 @@ const nilOrEmpty = R.either(R.isNil, R.isEmpty)
 const mapIndexed = R.addIndex(R.map)
 
 
+const scrollToBotBySelector = selector => {
+  const block = document.querySelector(selector)
+  block.scrollTop = block.scrollHeight
+}
+
+
 export {
   notEmpty,
   notNil,
   notEquals,
   nilOrEmpty,
   notNilOrEmpty,
-  mapIndexed
+  mapIndexed,
+  scrollToBotBySelector 
 }

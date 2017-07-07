@@ -16,22 +16,16 @@ import { getCurrentUser } from './lib/auth.js'
 ReactTapEventPlugin()
 
 let composeEnhancers = compose
-if (process.env.NODE_ENV !== 'production') {
-  // composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+// }
 
-const store = createStore(
-  Reducers,
-  composeEnhancers(applyMiddleware(Thunk))
-)
-
-// TODO: There should be a way to apply Pormise to the middleware to create
-// a initial state
 getCurrentUser()
-  .then( User => {
-    const store = createStore(
+  .then( user => {
+    const User = R.defaultTo({}, user)
+    let store = createStore(
       Reducers,
-      { User: R.when(R.isNil, R.always({}))(User) },
+      {User},
       composeEnhancers(applyMiddleware(Thunk))
     )
 
@@ -44,4 +38,5 @@ getCurrentUser()
       document.getElementById('buybuy')
     )
   })
+
 

@@ -1,6 +1,7 @@
 import R                    from 'ramda'
 import React, { Component } from 'react'
 import { connect }          from 'react-redux'
+import IconButton           from 'material-ui/IconButton'
 
 import { User } from '../../../actions/index.js'
 
@@ -33,37 +34,54 @@ class Login extends Component {
           R.join(' ', ['d-flex flex-column login', this.props.show_class])
         }
       >
-        <button
-          className='btn btn-secondary form-group'
-          onClick={this.loginByProvider(this.props.facebookLogin)}
-        >
-          continue with facebook
-        </button>
-        <button 
-          className='btn btn-primary form-group'
-          onClick={this.loginByProvider(this.props.googleLogin)}
-        >
-          log in with google
-        </button>
-        <p className='text-center'>Or</p>
+        <div className='d-flex justify-content-between'>
+          <p className='text-uppercase font-weight-bold'>Login with</p>
+          <i 
+            className='fa fa-times fa-lg' 
+            onTouchTap={this.props.closeModal}
+          />
+        </div>
+        <div className='d-flex justify-content-around icon'>
+          <IconButton
+            iconClassName='fa fa-facebook fa-3x'
+            onTouchTap={this.loginByProvider(this.props.facebookLogin)}
+          />
+          <IconButton
+            iconClassName='fa fa-google-plus fa-3x'
+            onTouchTap={this.loginByProvider(this.props.googleLogin)}
+          />
+        </div>
+
+        <p className='text-center'>or</p>
         <form 
           className='d-flex flex-column' 
           onSubmit={this.submit}
         >
           <div className='form-group'>
-            <input className='form-control' placeholder='Email' name='email' />
+            <input className='form-control'
+              placeholder='*Email' 
+              name='email' 
+              required
+            />
           </div>
           <div className='form-group'>
             <input 
               className='form-control' 
-              placeholder='Password' 
+              placeholder='*Password' 
               name='password' 
+              required
             />
           </div>
           <button type='submit' className='btn btn-primary text-center'>
-            Submit
+            LOGIN
           </button>
         </form>
+
+        <div className='text-center mt-1'>
+          <p>Don't have a account? 
+            <span onTouchTap={this.props.onClickToggleSignup}> Sign up</span>
+          </p>
+        </div>
       </div>
     )
   }

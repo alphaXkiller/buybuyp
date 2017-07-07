@@ -1,17 +1,20 @@
-import R        from 'ramda'
-import React    from 'react'
-import { Link } from 'react-router-dom'
-import Menu     from 'material-ui/Menu'
-import MenuItem from 'material-ui/MenuItem'
-import Dialog   from 'material-ui/Dialog'
-import Avatar   from 'material-ui/Avatar'
+import R          from 'ramda'
+import React      from 'react'
+import { Link }   from 'react-router-dom'
+import Menu       from 'material-ui/Menu'
+import MenuItem   from 'material-ui/MenuItem'
+import Dialog     from 'material-ui/Dialog'
+import Avatar     from 'material-ui/Avatar'
+import ChatBubble from 'material-ui/svg-icons/communication/chat-bubble'
 import Popover, { PopoverAnimationVertical }  from 'material-ui/Popover'
 
-import LoginForm from '../shared-components/form/login.js'
-import './header.scss'
+import LoginForm  from './shared-components/form/login.js'
+import SignupForm from './shared-components/form/signup.js'
+
+const CONTENT_STYLE = {maxWidth: '320px'}
 
 const _renderLoginUser = props => (
-  <button className='buybuy-btn'>
+  <button className='btn frameless'>
     <Avatar 
       id='user-avatar' 
       src={props.user.profile_image}
@@ -25,7 +28,6 @@ const _renderLoginUser = props => (
       animation={PopoverAnimationVertical}
     >
       <Menu>
-        <MenuItem primaryText='Dashboard' />
         <MenuItem 
           primaryText='Logout' 
           onTouchTap={props.onClickLogout}
@@ -41,7 +43,7 @@ const _renderAnonymousIcon = props => (
   <div>
     <button 
       id='header-user'
-      className='buybuy-btn' 
+      className='btn frameless' 
       onTouchTap={props.onClickOpenLoginModal}
     >
       <i className='fa fa-user-o fa-lg' />
@@ -50,30 +52,41 @@ const _renderAnonymousIcon = props => (
       open={props.open_login_modal}
       modal={false}
       onRequestClose={props.onClickCloseLoginModal}
+      contentStyle={CONTENT_STYLE}
     >
-      <LoginForm />
+      {
+        props.show_signup ?
+          <SignupForm 
+            onClickToggleSignup={props.onClickToggleSignup} 
+            closeModal={props.onClickCloseLoginModal}
+          />
+        : <LoginForm 
+            onClickToggleSignup={props.onClickToggleSignup} 
+            closeModal={props.onClickCloseLoginModal}
+          />
+     }
     </Dialog>
   </div>
 )
 
-
 const Header = props => {
+
   return (
     <header
       className={
         R.join(' ', [
-          'navbar navbar-trans',
+          'navbar',
           'fixed-top justify-content-between flex-row',
-          props.show_header_color ? ' bg-color' : ''
         ])
       }
     >
       <button
-        className='buybuy-btn'
+        className='btn frameless'
         onTouchTap={props.onClickShowMenu}
       >
         <i className='fa fa-bars fa-lg'></i>
       </button>
+
       <Link to='/' style={{fontSize: '20px'}}>Buy Buy</Link>
       {
         props.user.uid ?
@@ -87,7 +100,9 @@ const Header = props => {
         : _renderAnonymousIcon({
           open_login_modal       : props.open_login_modal,
           onClickOpenLoginModal  : props.onClickOpenLoginModal,
-          onClickCloseLoginModal : props.onClickCloseLoginModal
+          onClickCloseLoginModal : props.onClickCloseLoginModal,
+          onClickToggleSignup    : props.onClickToggleSignup,
+          show_signup            : props.show_signup
         })
       }
     </header>

@@ -1,0 +1,20 @@
+// break point
+$breakpoints: (
+  'sm': 576px,
+  'md': 768px,
+  'lg': 992px,
+  'xl': 1200px,
+);
+
+
+@mixin bp($name) {
+  @if map-has-key($breakpoints, $name) {
+    @media (min-width: map-get($breakpoints, $name)) {
+      @content;
+    }
+  }
+
+  @else {
+    @warn "Breakpoint (#{name}) is not defined in $breakpoints map"
+  }
+}
